@@ -1,6 +1,6 @@
 <?php
 
-namespace phpType;
+namespace PhpType;
 
 /**
  * 数组工具
