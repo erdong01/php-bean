@@ -4,19 +4,12 @@ namespace PhpType;
 
 
 /**
- * 实例操作
- * Class Entity
- * @package phpType
+ * Class Bean
+ * @package PhpType
  */
-class Entity
+trait  Bean
 {
     protected $instance;
-
-    /**
-     * 填充字段
-     * @var array
-     */
-    public static $fillable;
 
     /**
      * 设置实例
@@ -75,7 +68,7 @@ class Entity
      * @return object|static|null
      * @author chenqiaojie 2018-05-16
      */
-    public static function getInstance(bool $select = false)
+    public static function new(bool $select = false)
     {
         $instance = new static();
         $instance->setInstance($instance);
@@ -85,7 +78,6 @@ class Entity
                 $instance->$key = $key;
             }
         }
-
         return $instance;
     }
 
