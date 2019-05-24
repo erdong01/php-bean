@@ -1,0 +1,17 @@
+{
+  "name": "marstm/phptype",
+  "authors": [
+    {
+      "name": "chenqiaojie",
+      "email": "88155745@qq.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "phpType": "src"
+    }
+  }
+}
