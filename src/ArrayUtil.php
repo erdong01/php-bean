@@ -9,6 +9,31 @@ namespace PhpType;
  */
 class ArrayUtil
 {
+    protected $instance;
+
+    /**
+     * 设置实例
+     * @param $instance
+     * @author chenqiaojie 2018-08-07
+     */
+    public function setInstance($instance)
+    {
+        $this->instance = $instance;
+    }
+
+    /**
+     * 加载获得实例
+     * @param bool $select 要获取查询字段
+     * @return object|static|null
+     * @author chenqiaojie 2018-05-16
+     */
+    public static function new()
+    {
+        $instance = new static();
+        $instance->setInstance($instance);
+        return $instance;
+    }
+
     /**
      * 把两个字段转换成 关系型一维数组
      * @param $array
