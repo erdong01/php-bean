@@ -7,18 +7,68 @@ namespace PhpType;
  * Class Bean
  * @package PhpType
  */
-trait  Bean
+class Bean
 {
-    protected $instance;
+    protected static $instance;
 
     /**
      * 设置实例
      * @param $instance
-     * @author chenqiaojie 2018-08-07
+     * @param $entityName
      */
-    public function setInstance($instance)
+    public static function setInstance($entityName)
     {
-        $this->instance = $instance;
+        self::$instance[$entityName] = new $entityName;
+    }
+
+    /**
+     * 加载获得实例
+     * @param bool $select 要获取查询字段
+     * @return object|static|null
+     * @author chenqiaojie 2018-05-16
+     */
+    public static function new(bool $select = false)
+    {
+        $class_name = get_called_class();
+        if (isset(self::$instance[$class_name]) && self::$instance[$class_name] instanceof static) {
+            return self::$instance[$class_name];
+        }
+        self::setInstance($class_name);
+        $instance = self::$instance[$class_name];
+        if ($select === true) {
+            $classAttr = $instance->getClassAttr();
+            foreach ($classAttr as $key => $value) {
+                $instance->$key = $key;
+            }
+        }
+
+        return self::$instance[$class_name];
+    }
+
+    /**
+     * @param array $data
+     * @param null $abstract
+     * @return object|static|null
+     */
+    public static function bind($data = [], $abstract = null)
+    {
+        if (is_null($abstract)) {
+            $abstract = get_called_class();
+        }
+        if (!isset(self::$instance[$abstract])) {
+            self::setInstance($abstract);
+            $instance = self::$instance[$abstract];
+        } else {
+            $instance = self::getAlias($abstract);
+        }
+        $classAttr = $instance->getClassAttr($abstract);
+        foreach ($classAttr as $key => $value) {
+            $func = 'set' . $instance::convertUnder($key);
+            if (isset($data[$key])) {
+                $instance->$func($data[$key]);
+            }
+        }
+        return $instance;
     }
 
     /**
@@ -42,12 +92,31 @@ trait  Bean
      */
     public function toArray()
     {
-        $arr = get_object_vars($this->instance); //对象属性转数组
+        $abstract = get_called_class();
+        $arr = get_object_vars(self::$instance[$abstract]); //对象属性转数组
         $arr = array_filter($arr, function ($v, $k) {
-            return !empty($v) || $v === 0;
+            return !empty($v);
         }, ARRAY_FILTER_USE_BOTH); //过滤掉为空的数组
-        unset($arr['instance']);
         return $arr;
+    }
+
+    /**
+     * Get the alias for an abstract if available.
+     *
+     * @param string $abstract
+     * @return string
+     *
+     * @throws \LogicException
+     */
+    public static function getAlias($abstract)
+    {
+        if (!isset(self::$instance[$abstract])) {
+            return self::$instance[$abstract];
+        }
+        if (is_string($abstract) && isset(self::$instance[$abstract])) {
+            return self::$instance[$abstract];
+        }
+        return null;
     }
 
     /**
@@ -55,69 +124,34 @@ trait  Bean
      * @return array
      * @author chenqiaojie 2018-08-07
      */
-    private function getClassAttr()
+    private function getClassAttr($abstract)
     {
-        $arr = get_object_vars($this->instance); //对象属性转数组
-        unset($arr['instance']);
+        $arr = get_object_vars(self::$instance[$abstract]); //对象属性转数组
         return $arr;
     }
 
-    /**
-     * 加载获得实例
-     * @param bool $select 要获取查询字段
-     * @return object|static|null
-     * @author chenqiaojie 2018-05-16
-     */
-    public static function new(bool $select = false)
+
+    public function build($concrete)
     {
-        $instance = new static();
-        $instance->setInstance($instance);
-        if ($select === true) {
-            $classAttr = $instance->getClassAttr();
-            foreach ($classAttr as $key => $value) {
-                $instance->$key = $key;
-            }
+        $reflector = new \ReflectionClass($concrete);
+
+        // If the type is not instantiable, the developer is attempting to resolve
+        // an abstract type such as an Interface of Abstract Class and there is
+        // no binding registered for the abstractions so we need to bail out.
+        if (!$reflector->isInstantiable()) {
+            return $this->notInstantiable($concrete);
         }
-        return $instance;
+
+        $this->buildStack[] = $concrete;
+
+        $constructor = $reflector->getConstructor();
+        if (is_null($constructor)) {
+            array_pop($this->buildStack);
+
+            return new $concrete;
+        }
+
+        $dependencies = $constructor->getParameters();
     }
 
-    /**
-     * 绑定数据
-     * @param $data
-     * @return object|static|null
-     * @author chenqiaojie 2018-05-07
-     */
-    public static function bind($data)
-    {
-        $instance = new static();
-        $instance->setInstance($instance);
-        $classAttr = $instance->getClassAttr();
-        foreach ($classAttr as $key => $value) {
-            $func = 'set' . $instance::convertUnder($key);
-            if (isset($data->$key)) {
-                $instance->$func($data->$key);
-            }
-        }
-        return $instance;
-    }
-
-    /**
-     * 绑定表单数据
-     * @param array $data
-     * @return object|static|null
-     * @author chenqiaojie 2018-05-13
-     */
-    public static function form(array $data)
-    {
-        $instance = new static();
-        $instance->setInstance($instance);
-        $fillable = $instance->getClassAttr();
-        foreach ($fillable as $key => $value) {
-            $func = 'set' . self::convertUnder($key);
-            if (isset($data[$key])) {
-                $instance->$func($data[$key]);
-            }
-        }
-        return $instance;
-    }
 }

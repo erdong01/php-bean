@@ -42,7 +42,7 @@ class ArrayUtil
      * @return array
      * @author chenqiaojie 2018-12-21
      */
-    public function arrayKeyValue($array, string $key, string $value)
+    public function keyValueBy($array, string $key, string $value)
     {
         $arr = [];
         foreach ($array as $k => $v) {
@@ -59,7 +59,7 @@ class ArrayUtil
      * @return array
      * @author chenqiaojie 2018-12-21
      */
-    public function keyArray($array, $key)
+    public function keyBy($array, $key)
     {
         $arr = [];
         foreach ($array as $k => $v) {
@@ -76,7 +76,7 @@ class ArrayUtil
      * @return array
      * @author chenqiaojie 2019-01-11
      */
-    public function arrayKeyArray($array, $key): array
+    public function groupBy($array, $key): array
     {
         $arr = [];
         foreach ($array as $k => $v) {
@@ -93,7 +93,7 @@ class ArrayUtil
      * @param int $sort 排序类型  SORT_ASC     SORT_DESC
      * @return array 排序后的数组
      */
-    public function twoArraySort($array, $keys, $sort = SORT_DESC): array
+    public function sortBy($array, $keys, $sort = SORT_DESC): array
     {
         $keysValue = [];
         foreach ($array as $k => $v) {
@@ -101,5 +101,39 @@ class ArrayUtil
         }
         array_multisort($keysValue, $sort, $array);
         return $array;
+    }
+
+    /**
+     * 对比两个数组最大小位置
+     * @param $originArrays
+     * @param $targetArrays
+     * @return array
+     * @author chenqiaojie 2019-07-30
+     */
+    public function compareBy($originArrays, $targetArrays, $symbol = 'min')
+    {
+        $originArrays = array_flip($originArrays);
+        $minimum = ['key' => null, 'value' => null];
+        foreach ($targetArrays as $targetArraysV) {
+            if (isset($originArrays[$targetArraysV])) {
+                $originArraysKey = $originArrays[$targetArraysV];
+                if ($minimum['key'] === null) {
+                    $minimum = ['key' => $originArraysKey, 'value' => $targetArraysV];
+                }
+                switch ($symbol) {
+                    case "min":
+                        if ($minimum['key'] > $originArraysKey) {
+                            $minimum = ['key' => $originArraysKey, 'value' => $targetArraysV];
+                        }
+                        break;
+                    case "max":
+                        if ($minimum['key'] < $originArraysKey) {
+                            $minimum = ['key' => $originArraysKey, 'value' => $targetArraysV];
+                        }
+                        break;
+                }
+            }
+        }
+        return $minimum;
     }
 }
