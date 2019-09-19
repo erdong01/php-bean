@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpType;
+namespace marstm;
 
 /**
  * 数组工具

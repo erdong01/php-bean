@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpType\Model;
+namespace marstm\Model;
 
 
 trait BeanModel
