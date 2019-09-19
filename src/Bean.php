@@ -131,27 +131,4 @@ class Bean
     }
 
 
-    public function build($concrete)
-    {
-        $reflector = new \ReflectionClass($concrete);
-
-        // If the type is not instantiable, the developer is attempting to resolve
-        // an abstract type such as an Interface of Abstract Class and there is
-        // no binding registered for the abstractions so we need to bail out.
-        if (!$reflector->isInstantiable()) {
-            return $this->notInstantiable($concrete);
-        }
-
-        $this->buildStack[] = $concrete;
-
-        $constructor = $reflector->getConstructor();
-        if (is_null($constructor)) {
-            array_pop($this->buildStack);
-
-            return new $concrete;
-        }
-
-        $dependencies = $constructor->getParameters();
-    }
-
 }
