@@ -1,24 +1,29 @@
 <?php
 
-namespace marstm;
+namespace Mars;
 
 
 /**
  * Class Bean
  * @package PhpType
  */
-class Bean
+trait Bean
 {
-    protected static $instance;
+    private $instance;
+    private $prefix;
+
 
     /**
-     * 设置实例
-     * @param $instance
-     * @param $entityName
+     * 设置字段名
+     * @param $name
      */
-    public static function setInstance($entityName)
+    public function setField(string $prefix = "")
     {
-        self::$instance[$entityName] = new $entityName;
+        $classAttr = $this->instance->getClassAttr();
+        foreach ($classAttr as $key => $value) {
+            $this->instance->$key = $prefix . $key;
+        }
+        return $this->instance;
     }
 
     /**
@@ -29,20 +34,9 @@ class Bean
      */
     public static function new(bool $select = false)
     {
-        $class_name = get_called_class();
-        if (isset(self::$instance[$class_name]) && self::$instance[$class_name] instanceof static) {
-            return self::$instance[$class_name];
-        }
-        self::setInstance($class_name);
-        $instance = self::$instance[$class_name];
-        if ($select === true) {
-            $classAttr = $instance->getClassAttr();
-            foreach ($classAttr as $key => $value) {
-                $instance->$key = $key;
-            }
-        }
-
-        return self::$instance[$class_name];
+        $instance = new static();
+        $instance->instance = $instance;
+        return $instance;
     }
 
     /**
@@ -52,20 +46,13 @@ class Bean
      */
     public static function bind($data = [], $abstract = null)
     {
-        if (is_null($abstract)) {
-            $abstract = get_called_class();
-        }
-        if (!isset(self::$instance[$abstract])) {
-            self::setInstance($abstract);
-            $instance = self::$instance[$abstract];
-        } else {
-            $instance = self::getAlias($abstract);
-        }
-        $classAttr = $instance->getClassAttr($abstract);
+        $instance = new static();
+        $instance->instance = $instance;
+        $classAttr = $instance->getClassAttr();
         foreach ($classAttr as $key => $value) {
             $func = 'set' . $instance::convertUnder($key);
-            if (isset($data[$key])) {
-                $instance->$func($data[$key]);
+            if (isset($data->$key)) {
+                $instance->$func($data->$key);
             }
         }
         return $instance;
@@ -92,31 +79,13 @@ class Bean
      */
     public function toArray()
     {
-        $abstract = get_called_class();
-        $arr = get_object_vars(self::$instance[$abstract]); //对象属性转数组
+        $arr = get_object_vars($this->instance);  //对象属性转数组
         $arr = array_filter($arr, function ($v, $k) {
             return !empty($v);
         }, ARRAY_FILTER_USE_BOTH); //过滤掉为空的数组
+        unset($arr['instance']);
+        unset($arr['instanceArr']);
         return $arr;
-    }
-
-    /**
-     * Get the alias for an abstract if available.
-     *
-     * @param string $abstract
-     * @return string
-     *
-     * @throws \LogicException
-     */
-    public static function getAlias($abstract)
-    {
-        if (!isset(self::$instance[$abstract])) {
-            return self::$instance[$abstract];
-        }
-        if (is_string($abstract) && isset(self::$instance[$abstract])) {
-            return self::$instance[$abstract];
-        }
-        return null;
     }
 
     /**
@@ -124,9 +93,11 @@ class Bean
      * @return array
      * @author chenqiaojie 2018-08-07
      */
-    private function getClassAttr($abstract)
+    private function getClassAttr()
     {
-        $arr = get_object_vars(self::$instance[$abstract]); //对象属性转数组
+        $arr = get_object_vars($this->instance); //对象属性转数组
+        unset($arr['instance']);
+        unset($arr['instanceArr']);
         return $arr;
     }
 

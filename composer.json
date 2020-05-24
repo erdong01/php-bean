@@ -1,5 +1,5 @@
 {
-  "name": "marstm/bean",
+  "name": "mars/bean",
   "authors": [
     {
       "name": "erdong",
@@ -11,7 +11,18 @@
   },
   "autoload": {
     "psr-4": {
-      "": "src/"
+      "Mars\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Mars\\": "test/"
+    }
+  },
+  "repositories": {
+    "packagist": {
+      "type": "composer",
+      "url": "https://mirrors.aliyun.com/composer/"
     }
   }
 }
