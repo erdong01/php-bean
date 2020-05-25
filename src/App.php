@@ -1,10 +1,8 @@
 <?php
 
-
 namespace Marstm;
 
-
-trait App
+class App
 {
     private static $instanceArr;
 
@@ -15,10 +13,10 @@ trait App
      */
     public function setInstance($entityName)
     {
-        //        if (isset(self::$instance[$class_name]) && self::$instance[$class_name] instanceof static) {
+//        if (isset(self::$instance[$class_name]) && self::$instance[$class_name] instanceof static) {
 //            return self::$instance[$class_name];
 //        }
-        // $class_name = get_called_class();
+//        $class_name = get_called_class();
         self::$instanceArr[$entityName] = new $entityName;
 
     }
