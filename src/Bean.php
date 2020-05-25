@@ -1,7 +1,6 @@
 <?php
 
-namespace Mars;
-
+namespace Marstm;
 
 /**
  * Class Bean
@@ -10,12 +9,11 @@ namespace Mars;
 trait Bean
 {
     private $instance;
-    private $prefix;
-
 
     /**
      * 设置字段名
-     * @param $name
+     * @param string $prefix
+     * @return mixed
      */
     public function setField(string $prefix = "")
     {
@@ -40,22 +38,25 @@ trait Bean
     }
 
     /**
+     * 绑定数据
      * @param array $data
-     * @param null $abstract
-     * @return object|static|null
+     * @return static
      */
-    public static function bind($data = [], $abstract = null)
+    public static function bind($data = [])
     {
         $instance = new static();
         $instance->instance = $instance;
-        $classAttr = $instance->getClassAttr();
+        $classAttr = $instance->instance->getClassAttr();
+
         foreach ($classAttr as $key => $value) {
             $func = 'set' . $instance::convertUnder($key);
-            if (isset($data->$key)) {
-                $instance->$func($data->$key);
+            if (isset($data[$key])) {
+                $instance->instance->$func($data[$key]);
+            } else if (isset($data->$key)) {
+                $instance->instance->$func($data->$key);
             }
         }
-        return $instance;
+        return $instance->instance;
     }
 
     /**

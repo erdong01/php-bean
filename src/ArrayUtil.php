@@ -1,6 +1,6 @@
 <?php
 
-namespace Mars;
+namespace Marstm;
 
 /**
  * 数组工具

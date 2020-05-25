@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Mars;
+namespace Marstm;
 
 
 trait App

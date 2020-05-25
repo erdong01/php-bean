@@ -1,5 +1,5 @@
 {
-  "name": "mars/bean",
+  "name": "marstm/bean",
   "authors": [
     {
       "name": "erdong",
@@ -11,12 +11,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Mars\\": "src/"
+      "Marstm\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Mars\\": "test/"
+      "Marstm\\": "test/"
     }
   },
   "repositories": {

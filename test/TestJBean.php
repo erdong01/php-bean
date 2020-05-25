@@ -42,7 +42,6 @@ class TestJBean
         $this->user_name = $user_name;
     }
 
-
     /**
      * @var int
      */
@@ -63,3 +62,6 @@ var_dump($test->toArray());
 $test1 = TestJBean::new()->setField("user.");
 var_dump($test1->toArray());
 var_dump($test->toArray());
+
+$test2 = TestJBean::bind(["user_id" => 12, "user_name" => "new"]);
+var_dump($test2->toArray());
