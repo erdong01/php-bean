@@ -43,7 +43,16 @@ $userBean = UserBean::bind(["user_id" => 12, "user_name" => "new"]);
  
 ```php
 # user. 表前缀，不设置为空
-$userBean1 = UserBean::new()->setField("user.");
+$userBean = UserBean::new()->setField("user.");
+```
+
+#### toArray
+
+输出数组
+ 
+```php
+# user. 表前缀，不设置为空
+$userArr = UserBean::new()->toArray();
 ```
 编辑器使用 phpStorm
 
