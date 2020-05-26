@@ -2,7 +2,7 @@
 
 [![Php Version](https://img.shields.io/badge/php-%3E=7.1-brightgreen.svg?maxAge=2592000)](https://secure.php.net/)
 
-安装：
+###安装：
 ```
 composer require marstm/bean
 ```
@@ -21,6 +21,8 @@ class TestJBean
 }
 ```
 
+### 功能方法:
+
 #### new
 
 实例对象
@@ -28,7 +30,6 @@ class TestJBean
 ```php
 $userBean = UserBean::new();
 ```
-
 
 #### bind
 
@@ -58,12 +59,11 @@ $userBean = UserBean::new()->setField("user.");
 输出数组
  
 ```php
-# user. 表前缀，不设置为空
 $userArr = UserBean::new()->toArray();
 ```
 
 
-### 编辑器使用 phpStorm
+### phpStorm 编辑器使用 
 
 生成get和set：类名右击->选择Generate->Getters and Setters->选择class 属性->ok 就可以生产了
 
