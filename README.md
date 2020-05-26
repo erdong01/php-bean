@@ -189,6 +189,7 @@ class UserBean
      */
     private $user_name;
 }
+
 $userBean = UserBean::new(0, "testName");
 
 ```
