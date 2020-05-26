@@ -131,3 +131,64 @@ $userBean->setUserId(111);
 \DB::table("user")->insert($userBean->toArray());
 
 ```
+
+
+### 定义一个构造方法约束初始化赋值
+
+```php
+
+use Marstm\Bean;
+
+class UserBean 
+{
+    public function __construct($user_id, $user_name){
+        $this->setUserId($user_id);
+    }
+    /**
+     * @return int|null
+     */
+    public function getUserId(): ?int
+    {
+        return $this->user_id;
+    }
+
+    /**
+     * @param int|null $user_id
+     */
+    public function setUserId(?int $user_id): void
+    {
+        $this->user_id = $user_id;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUserName(): ?string
+    {
+        return $this->user_name;
+    }
+
+    /**
+     * @param string|null $user_name
+     */
+    public function setUserName(?string $user_name): void
+    {
+        $this->user_name = $user_name;
+    }
+
+    use Bean;
+    /**
+     * 用户id
+     * @var int|null #整型
+     */
+    private $user_id;
+
+    /**
+     * 用户名
+     * @var string|null #字符串类型
+     */
+    private $user_name;
+}
+$userBean = UserBean::new(0, "testName");
+
+```

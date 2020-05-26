@@ -25,13 +25,12 @@ trait Bean
     }
 
     /**
-     * 加载获得实例
-     * @param bool $select 要获取查询字段
+     * @param mixed ...$columns
      * @return object|static|null
      */
-    public static function new(bool $select = false)
+    public static function new(...$columns)
     {
-        $instance = new static();
+        $instance = new static(...$columns);
         $instance->instance = $instance;
         return $instance;
     }
@@ -46,9 +45,11 @@ trait Bean
         $instance = new static();
         $instance->instance = $instance;
         $classAttr = $instance->instance->getClassAttr();
-
         foreach ($classAttr as $key => $value) {
             $func = 'set' . $instance::convertUnder($key);
+            if (!function_exists($func) || !property_exists($key)) {
+                continue;
+            }
             if (isset($data[$key])) {
                 $instance->instance->$func($data[$key]);
             } else if (isset($data->$key)) {
@@ -75,13 +76,20 @@ trait Bean
      * 转换数组
      * @return array
      */
-    public function toArray()
+    public function toArr()
     {
-        $arr = get_object_vars($this->instance);  //对象属性转数组
-        $arr = array_filter($arr, function ($v, $k) {
-            return !empty($v);
-        }, ARRAY_FILTER_USE_BOTH); //过滤掉为空的数组
-        $this->unset($arr);
+        $arr = [];  //对象属性转数组
+        $classAttr = $this->getClassAttr();
+        foreach ($classAttr as $key => $value) {
+            $func = 'get' . $this->convertUnder($key);
+            if (!method_exists($this, $func) || !property_exists($this, $key)) {
+                continue;
+            }
+            $val = $this->$func();
+            if ($val !== null) {
+                $arr[$key] = $val;
+            }
+        }
         return $arr;
     }
 
