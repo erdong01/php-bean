@@ -111,12 +111,12 @@ class UserBean
      * 用户id
      * @var int #整型
      */
-    public $user_id;
+    private $user_id;
     /**
      * 用户名
      * @var string #字符串类型
      */
-    public $user_name;
+    private $user_name;
 
 }
 ```
