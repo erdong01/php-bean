@@ -36,14 +36,21 @@ $userBean = UserBean::new();
 
 ```php
 $userBean = UserBean::bind(["user_id" => 12, "user_name" => "new"]);
+
 ```
 #### setField
 
-设置属性字段名
+设置映射属性字段名，在也不用担心字段名写错，频繁去数据库查询表下有什么字段。
  
 ```php
 # user. 表前缀，不设置为空
 $userBean = UserBean::new()->setField("user.");
+
+//示例一
+\DB::table("user")->select($userBean->toArray())->get();
+
+//示例二
+\DB::table("user")->select($userBean->getUserName())->where($userBean->getUserId(),"10086")->get();
 ```
 
 #### toArray

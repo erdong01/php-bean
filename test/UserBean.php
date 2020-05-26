@@ -58,7 +58,6 @@ class UserBean
 $userBean = UserBean::new();
 $userBean->setUserName("teset");
 $userBean->setUserId(111);
-
 var_dump($userBean->toArray());
 
 $userBean1 = UserBean::new()->setField("user.");
@@ -67,3 +66,4 @@ var_dump($userBean->toArray());
 
 $userBean2 = UserBean::bind(["user_id" => 12, "user_name" => "new"]);
 var_dump($userBean2->toArray());
+
