@@ -61,9 +61,11 @@ $userBean = UserBean::new()->setField("user.");
 # user. 表前缀，不设置为空
 $userArr = UserBean::new()->toArray();
 ```
-编辑器使用 phpStorm
 
-类名右击->选择Generate->Getters and Setters->选择class 属性->ok 就可以生产了
+
+### 编辑器使用 phpStorm
+
+生成get和set：类名右击->选择Generate->Getters and Setters->选择class 属性->ok 就可以生产了
 
 快捷键 alt + insert
 
