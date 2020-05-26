@@ -6,10 +6,8 @@ require "../vendor/autoload.php";
 
 use Marstm\Bean;
 
-class TestJBean
+class UserBean
 {
-    use Bean;
-
     /**
      * @return int
      */
@@ -42,26 +40,30 @@ class TestJBean
         $this->user_name = $user_name;
     }
 
+    use Bean;
+
     /**
-     * @var int
+     * 用户id
+     * @var int #整型
      */
     public $user_id;
     /**
-     * @var string
+     * 用户名
+     * @var string #字符串类型
      */
     public $user_name;
 
 }
 
-$test = TestJBean::new();
-$test->setUserName("teset");
-$test->setUserId(111);
+$userBean = UserBean::new();
+$userBean->setUserName("teset");
+$userBean->setUserId(111);
 
-var_dump($test->toArray());
+var_dump($userBean->toArray());
 
-$test1 = TestJBean::new()->setField("user.");
-var_dump($test1->toArray());
-var_dump($test->toArray());
+$userBean1 = UserBean::new()->setField("user.");
+var_dump($userBean1->toArray());
+var_dump($userBean->toArray());
 
-$test2 = TestJBean::bind(["user_id" => 12, "user_name" => "new"]);
-var_dump($test2->toArray());
+$userBean2 = UserBean::bind(["user_id" => 12, "user_name" => "new"]);
+var_dump($userBean2->toArray());
