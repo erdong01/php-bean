@@ -21,7 +21,7 @@ class TestJBean
 }
 ```
 
-####new
+#### new
 
 实例对象
 
@@ -30,14 +30,14 @@ $userBean = UserBean::new();
 ```
 
 
-####bind
+#### bind
 
 属性绑定数据
 
 ```php
 $userBean = UserBean::bind(["user_id" => 12, "user_name" => "new"]);
 ```
-####setField
+#### setField
 
 设置属性字段名
  
