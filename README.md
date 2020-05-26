@@ -120,3 +120,14 @@ class UserBean
 
 }
 ```
+
+### 简单代替数组
+
+```php
+
+$userBean = UserBean::new();
+$userBean->setUserName("teset");
+$userBean->setUserId(111);
+\DB::table("user")->insert($userBean->toArray());
+
+```
