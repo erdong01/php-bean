@@ -1,6 +1,10 @@
 <?php
 
 namespace Marstm;
+interface  Arrayable
+{
+
+}
 
 /**
  * Class Bean
@@ -8,7 +12,9 @@ namespace Marstm;
  */
 trait Bean
 {
-    private $instance;
+    protected $instance;
+
+    protected $properties;
 
     /**
      * 设置字段名
@@ -24,6 +30,7 @@ trait Bean
         return $this->instance;
     }
 
+
     /**
      * @param mixed ...$columns
      * @return object|static|null
@@ -32,7 +39,18 @@ trait Bean
     {
         $instance = new static(...$columns);
         $instance->instance = $instance;
+        $instance->getProperties();
         return $instance;
+    }
+
+    private function getProperties()
+    {
+        if ($this->instance->properties) {
+            return $this->instance->properties;
+        }
+        $class = new \ReflectionObject($this->instance);
+        $properties = $class->getProperties(\ReflectionProperty::IS_PRIVATE);
+        $this->instance->properties = array_column($properties, 'name');
     }
 
     /**
@@ -44,8 +62,8 @@ trait Bean
     {
         $instance = new static();
         $instance->instance = $instance;
-        $classAttr = $instance->instance->getClassAttr();
-        foreach ($classAttr as $key => $value) {
+        $classAttr = $instance->instance->properties;
+        foreach ($classAttr as $key) {
             $func = 'set' . $instance::convertUnder($key);
             if (!function_exists($func) || !property_exists($key)) {
                 continue;
@@ -72,6 +90,7 @@ trait Bean
         return $ucfirst ? ucfirst($str) : $str;
     }
 
+
     /**
      * 转换数组
      * @return array
@@ -79,15 +98,15 @@ trait Bean
     public function toArr()
     {
         $arr = [];  //对象属性转数组
-        $classAttr = $this->getClassAttr();
-        foreach ($classAttr as $key => $value) {
-            $func = 'get' . $this->convertUnder($key);
-            if (!method_exists($this, $func) || !property_exists($this, $key)) {
+        $classAttr = $this->properties;
+        foreach ($classAttr as $v) {
+            $func = 'get' . $this->convertUnder($v);
+            if (!method_exists($this->instance, $func) || !property_exists($this->instance, $v)) {
                 continue;
             }
             $val = $this->$func();
             if ($val !== null) {
-                $arr[$key] = $val;
+                $arr[$v] = $val;
             }
         }
         return $arr;

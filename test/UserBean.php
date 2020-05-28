@@ -5,14 +5,32 @@ namespace Marstm\Test;
 require "../vendor/autoload.php";
 
 use Marstm\Bean;
+use Marstm\ArrayList;
 
 class Base
 {
+    /**
+     * @return string
+     */
+    public function getB(): string
+    {
+        return $this->b;
+    }
 
-    private $a;
-    protected $b;
+    /**
+     * @param string $b
+     */
+    public function setB(string $b): void
+    {
+        $this->b = $b;
+    }
 
-    public $c;
+
+    private $ad = '11';
+    protected $b = 'bb';
+
+    public $c = 'cc';
+
 }
 
 class UserBean extends Base
@@ -20,6 +38,7 @@ class UserBean extends Base
     public function __construct($user_id, $user_name)
     {
         $this->setUserId($user_id);
+        $this->setUserName($user_name);
     }
 
     /**
@@ -91,11 +110,10 @@ class UserBean extends Base
 
 }
 
-$userBean = UserBean::new(0, "testest");
+$userBean = UserBean::new(0, "");
 //$userBean->setUserName("teset");
 //$userBean->setUserId(111);
 $userBean->setIsRegister(false);
-var_dump($userBean->getIsRegister());
 
 //$userBean1 = UserBean::new()->setField("user.");
 //var_dump($userBean1->toArr());
@@ -104,3 +122,23 @@ var_dump($userBean->getIsRegister());
 //$userBean2 = UserBean::bind(["user_id" => 12, "user_name" => "new"]);
 //var_dump($userBean2->toArr());
 
+$beanList = ArrayList::new();
+
+$beanList->add($userBean);
+
+$beanList2 = UserBean::new(22, "test");
+$beanList->add($beanList2);
+$beanList->add(["bb" => "aaa"]);
+$beanList->add(["ddddddd"]);
+$b = new Base();
+$beanList->add($b);
+
+var_dump($beanList->toArr());
+
+
+$arr=array('a','b','c','d','e','f','g');
+
+$i_arr=array(['1'],'2');
+$n=2;
+array_splice($arr,$n,0,$i_arr);
+print_r($arr);

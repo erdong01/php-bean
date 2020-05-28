@@ -4,10 +4,10 @@ namespace Marstm;
 
 /**
  * 数组工具
- * Class ArrayUtil
+ * Class Arr
  * @package App\Utils
  */
-class ArrayUtil
+class Arr
 {
     protected $instance;
 
