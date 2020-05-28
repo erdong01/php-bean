@@ -1,17 +1,14 @@
 <?php
 
 namespace Marstm;
-interface  Arrayable
-{
-
-}
-
+use \Marstm\Support\Arr;
 /**
  * Class Bean
  * @package PhpType
  */
 trait Bean
 {
+    use Arr;
     protected $instance;
 
     protected $properties;
@@ -43,7 +40,7 @@ trait Bean
         return $instance;
     }
 
-    private function getProperties()
+    public function getProperties()
     {
         if ($this->instance->properties) {
             return $this->instance->properties;

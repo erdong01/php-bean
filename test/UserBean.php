@@ -6,6 +6,7 @@ require "../vendor/autoload.php";
 
 use Marstm\Bean;
 use Marstm\ArrayList;
+use Marstm\Support\Arr;
 
 class Base
 {
@@ -132,13 +133,6 @@ $beanList->add(["bb" => "aaa"]);
 $beanList->add(["ddddddd"]);
 $b = new Base();
 $beanList->add($b);
-
-var_dump($beanList->toArr());
-
-
-$arr=array('a','b','c','d','e','f','g');
-
-$i_arr=array(['1'],'2');
-$n=2;
-array_splice($arr,$n,0,$i_arr);
-print_r($arr);
+$beanList->addAll(null, ["ffff" => "hhhh"]);
+$beanList2->getProperties();
+//Arr::new();

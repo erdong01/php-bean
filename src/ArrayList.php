@@ -21,12 +21,17 @@ class ArrayList
         return $this->beanList[$index];
     }
 
+    public function set($index, $element)
+    {
+        return $this->beanList[$index] = $element;
+    }
+
     public function add(...$object)
     {
         array_unshift($this->beanList, $object);
     }
 
-    public function set($index, ...$element)
+    public function addAll($index, ...$element)
     {
         array_splice($this->beanList, $index, 0, $element);
     }
@@ -79,13 +84,13 @@ class ArrayList
     public function toArr()
     {
         $arr = [];
-        foreach ($this->beanList as $v) {
+        foreach ($this->beanList as $k => $v) {
             if (is_object($v) && method_exists($v, 'toArr')) {
-                $arr[] = $v->toArr();
+                $arr[$k] = $v->toArr();
             } else if (is_object($v)) {
-                $arr[] = get_object_vars($v);
+                $arr[$k] = get_object_vars($v);
             } else {
-                $arr[] = $v;
+                $arr[$k] = $v;
             }
         }
         return $arr;
