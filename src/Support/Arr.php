@@ -4,10 +4,12 @@
 namespace Marstm\Support;
 
 
-use Marstm\ArrayList;
+use Marstm\Container\Container;
 
 trait Arr
 {
+    use Container;
+
     /**
      * @return mixed
      */
@@ -33,7 +35,6 @@ trait Arr
 
         return array_keys($keys) !== $keys;
     }
-
 
 
 }

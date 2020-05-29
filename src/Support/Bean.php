@@ -1,17 +1,16 @@
 <?php
 
-namespace Marstm;
-use \Marstm\Support\Arr;
+namespace Marstm\Support;
+
+use Marstm\Container\Container;
+
 /**
  * Class Bean
  * @package PhpType
  */
 trait Bean
 {
-    use Arr;
-    protected $instance;
-
-    protected $properties;
+    use Container;
 
     /**
      * 设置字段名
@@ -34,7 +33,7 @@ trait Bean
      */
     public static function new(...$columns)
     {
-        $instance = new static(...$columns);
+        $instance = new self(...$columns);
         $instance->instance = $instance;
         $instance->getProperties();
         return $instance;

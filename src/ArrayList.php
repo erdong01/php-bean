@@ -1,28 +1,36 @@
 <?php
 
-
 namespace Marstm;
 
+use \Marstm\Support\Arr;
+use Marstm\Support\Bean;
 
 class ArrayList
 {
-    /**
-     * @var array
-     */
-    protected $beanList = [];
+    use  Arr;
 
     public static function new()
     {
-        return new static();
+        return new self();
     }
 
-    public function get($index)
+    /**
+     * @param $index
+     * @param $bean
+     * @return mixed|void
+     */
+    public function get($index, &$bean = null)
     {
+        if (!empty($bean)) {
+            $bean = $this->beanList[$index];
+            return;
+        }
         return $this->beanList[$index];
     }
 
     public function set($index, $element)
     {
+
         return $this->beanList[$index] = $element;
     }
 
@@ -83,10 +91,24 @@ class ArrayList
      */
     public function toArr()
     {
+        return $this->objectArray($this->beanList);
+    }
+
+    private function objectArray($e)
+    {
         $arr = [];
-        foreach ($this->beanList as $k => $v) {
-            if (is_object($v) && method_exists($v, 'toArr')) {
-                $arr[$k] = $v->toArr();
+        if (is_object($e)) {
+            if ($this->isBean($e)) {
+                $arr = $this->beanToArr($e);
+            } else if (is_object($e)) {
+                $arr = get_object_vars($e);
+            }
+            return $arr;
+        }
+
+        foreach ($e as $k => $v) {
+            if ($this->isBean($v)) {
+                $arr[$k] = $this->beanToArr($v);
             } else if (is_object($v)) {
                 $arr[$k] = get_object_vars($v);
             } else {
@@ -94,5 +116,18 @@ class ArrayList
             }
         }
         return $arr;
+    }
+
+    public function beanToArr($object)
+    {
+        return $object->toArr();
+    }
+
+    public function isBean($object)
+    {
+        if (is_object($object) && method_exists($object, 'toArr')) {
+            return true;
+        }
+        return false;
     }
 }

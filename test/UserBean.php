@@ -4,7 +4,7 @@ namespace Marstm\Test;
 
 require "../vendor/autoload.php";
 
-use Marstm\Bean;
+use Marstm\Support\Bean;
 use Marstm\ArrayList;
 use Marstm\Support\Arr;
 
@@ -34,6 +34,10 @@ class Base
 
 }
 
+/**
+ * Class UserBean
+ * @package Marstm\Test
+ */
 class UserBean extends Base
 {
     public function __construct($user_id, $user_name)
@@ -128,11 +132,18 @@ $beanList = ArrayList::new();
 $beanList->add($userBean);
 
 $beanList2 = UserBean::new(22, "test");
-$beanList->add($beanList2);
-$beanList->add(["bb" => "aaa"]);
-$beanList->add(["ddddddd"]);
-$b = new Base();
-$beanList->add($b);
-$beanList->addAll(null, ["ffff" => "hhhh"]);
-$beanList2->getProperties();
+//$beanList->add($beanList2);
+//$beanList->add(["bb" => "aaa"]);
+//$beanList->add(["ddddddd"]);
+//$b = new Base();
+//$beanList->add($b);
+//$beanList->addAll(null, ["ffff" => "hhhh"]);
 //Arr::new();
+$set = $beanList->set("beanList2", $beanList2);
+$beanList3 = UserBean::new(null, null);
+
+$beanList4 = $beanList->get("beanList2");
+$beanList2->setUserName("teste");
+var_dump($beanList->toArr());
+
+
