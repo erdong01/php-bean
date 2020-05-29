@@ -9,9 +9,17 @@ class ArrayList
 {
     use  Arr;
 
-    public static function new()
+    private $index;
+
+    /**
+     * @param mixed ...$item
+     * @return ArrayList
+     */
+    public static function new($item)
     {
-        return new self();
+        $i = new self();
+        $i->objectArray($item, 1);
+        return $i;
     }
 
     /**
@@ -22,46 +30,48 @@ class ArrayList
     public function get($index, &$bean = null)
     {
         if (!empty($bean)) {
-            $bean = $this->beanList[$index];
+            $bean = $this->items[$index];
             return;
         }
-        return $this->beanList[$index];
+        return $this->items[$index];
     }
 
     public function set($index, $element)
     {
-
-        return $this->beanList[$index] = $element;
+        return $this->items[$index] = $this->objectArray($element);
     }
 
     public function add(...$object)
     {
-        array_unshift($this->beanList, $object);
+        $this->objectArray($object, 1);
+        return;
     }
 
     public function addAll($index, ...$element)
     {
-        array_splice($this->beanList, $index, 0, $element);
+        $this->index = $index;
+        $this->objectArray($element, 2);
+        return;
     }
 
     public function remove($index)
     {
-        unset($this->beanList[$index]);
+        unset($this->items[$index]);
     }
 
     public function size()
     {
-        return count($this->beanList);
+        return count($this->items);
     }
 
     public function isEmpty($index = null)
     {
         if ($index) {
-            if (isset($this->beanList[$index]) && empty($this->beanList[$index])) {
+            if (isset($this->items[$index]) && empty($this->items[$index])) {
                 return true;
             }
         } else {
-            if (count($this->beanList)) {
+            if (count($this->items)) {
                 return true;
             }
         }
@@ -73,7 +83,7 @@ class ArrayList
      */
     public function clear()
     {
-        $this->beanList = [];
+        $this->items = [];
 
     }
 
@@ -82,7 +92,7 @@ class ArrayList
      */
     public function pop()
     {
-        return array_pop($this->beanList);
+        return array_pop($this->items);
     }
 
     /**
@@ -91,11 +101,15 @@ class ArrayList
      */
     public function toArr()
     {
-        return $this->objectArray($this->beanList);
+        return $this->items;
     }
 
-    private function objectArray($e)
+    private function objectArray($e, $type = null)
     {
+        if (is_array($e)) {
+            $this->items = $e;
+            return;
+        }
         $arr = [];
         if (is_object($e)) {
             if ($this->isBean($e)) {
@@ -105,17 +119,21 @@ class ArrayList
             }
             return $arr;
         }
-
         foreach ($e as $k => $v) {
             if ($this->isBean($v)) {
-                $arr[$k] = $this->beanToArr($v);
+                $arr = $this->beanToArr($v);
             } else if (is_object($v)) {
-                $arr[$k] = get_object_vars($v);
+                $arr = get_object_vars($v);
             } else {
-                $arr[$k] = $v;
+                $arr = $v;
+            }
+            if ($type === 1) {
+                array_unshift($this->items, $arr);
+            } else if ($type === 2) {
+                array_splice($this->items, $this->index, 0, $arr);
             }
         }
-        return $arr;
+        return;
     }
 
     public function beanToArr($object)
@@ -130,4 +148,6 @@ class ArrayList
         }
         return false;
     }
+
+
 }
