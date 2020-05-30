@@ -13,7 +13,10 @@
   "autoload": {
     "psr-4": {
       "Marstm\\": "src/"
-    }
+    },
+    "files": [
+      "Helpers/Functions.php"
+    ]
   },
   "autoload-dev": {
     "psr-4": {

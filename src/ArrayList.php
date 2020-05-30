@@ -15,7 +15,7 @@ class ArrayList
      * @param mixed ...$item
      * @return ArrayList
      */
-    public static function new($item)
+    public static function new($item = [])
     {
         $i = new self();
         $i->objectArray($item, 1);
@@ -93,60 +93,6 @@ class ArrayList
     public function pop()
     {
         return array_pop($this->items);
-    }
-
-    /**
-     * @return array
-     * @author chenqiaojie 2020-05-28
-     */
-    public function toArr()
-    {
-        return $this->items;
-    }
-
-    private function objectArray($e, $type = null)
-    {
-        if (is_array($e)) {
-            $this->items = $e;
-            return;
-        }
-        $arr = [];
-        if (is_object($e)) {
-            if ($this->isBean($e)) {
-                $arr = $this->beanToArr($e);
-            } else if (is_object($e)) {
-                $arr = get_object_vars($e);
-            }
-            return $arr;
-        }
-        foreach ($e as $k => $v) {
-            if ($this->isBean($v)) {
-                $arr = $this->beanToArr($v);
-            } else if (is_object($v)) {
-                $arr = get_object_vars($v);
-            } else {
-                $arr = $v;
-            }
-            if ($type === 1) {
-                array_unshift($this->items, $arr);
-            } else if ($type === 2) {
-                array_splice($this->items, $this->index, 0, $arr);
-            }
-        }
-        return;
-    }
-
-    public function beanToArr($object)
-    {
-        return $object->toArr();
-    }
-
-    public function isBean($object)
-    {
-        if (is_object($object) && method_exists($object, 'toArr')) {
-            return true;
-        }
-        return false;
     }
 
 
