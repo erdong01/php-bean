@@ -239,13 +239,39 @@ trait Arr
 
     public function groupBy($groupBy, $preserveKeys = false)
     {
-
+        if (is_string($groupBy)) {
+            $groupKeys[] = $groupBy;
+        }
         if (is_array($groupBy)) {
             $nextGroups = $groupBy;
             $groupBy = array_shift($nextGroups);
+            if (!$groupBy) return;
         }
-        $this->groupBy();
-        var_dump($nextGroups);
+        $groupByV = $this->valueRetriever($groupBy);
+        $results = [];
+        foreach ($this->items as $key => $value) {
+
+            if (is_object($groupByV)) {
+                $groupKeyArr = $groupByV($value);
+            } else {
+                $groupKeyArr = [$value[$groupBy]];
+
+            }
+            foreach ($groupKeyArr as $groupKey) {
+                if ($preserveKeys == false) {
+                    $results[$groupKey][] = $value;
+                } else {
+                    $results[$groupKey][$key] = $value;
+                }
+            }
+        }
+
+        if (!empty($nextGroups)) {
+            $this->groupBy($nextGroups);
+        }
+
+        $this->items = $results;
+        return $this;
     }
 
     /**
@@ -260,6 +286,7 @@ trait Arr
 
         $items = array_map($callback, $this->items, $keys);
         $this->items = array_combine($keys, $items);
+
         return $this;
     }
 }
