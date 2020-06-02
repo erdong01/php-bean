@@ -237,7 +237,8 @@ trait Arr
         return $this;
     }
 
-    public function groupBy($groupBy, $preserveKeys = false)
+
+    public function groupBy($groupBy, $preserveKeys = false, &$results = [])
     {
         if (is_string($groupBy)) {
             $groupKeys[] = $groupBy;
@@ -247,10 +248,9 @@ trait Arr
             $groupBy = array_shift($nextGroups);
             if (!$groupBy) return;
         }
-        $groupByV = $this->valueRetriever($groupBy);
-        $results = [];
-        foreach ($this->items as $key => $value) {
 
+        $groupByV = $this->valueRetriever($groupBy);
+        foreach ($this->items as $key => $value) {
             if (is_object($groupByV)) {
                 $groupKeyArr = $groupByV($value);
             } else {
@@ -258,19 +258,23 @@ trait Arr
 
             }
             foreach ($groupKeyArr as $groupKey) {
+
                 if ($preserveKeys == false) {
                     $results[$groupKey][] = $value;
                 } else {
                     $results[$groupKey][$key] = $value;
                 }
+
             }
-        }
 
+        }
+        var_dump($results);
+        die;
         if (!empty($nextGroups)) {
-            $this->groupBy($nextGroups);
+            $this->groupBy($nextGroups, $preserveKeys, $results);
         }
 
-        $this->items = $results;
+//        $this->items = $results;
         return $this;
     }
 

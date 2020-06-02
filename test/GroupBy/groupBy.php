@@ -21,5 +21,5 @@ $list = ArrayList::new([10 => ['user' => 1000, 'skill' => 100, 'roles' => ['Role
 $res = $list->groupBy(['skill', function ($item) {
     return $item['roles'];
 }],true);
-var_dump($res->toArr());
+//var_dump($res->toArr());
 
