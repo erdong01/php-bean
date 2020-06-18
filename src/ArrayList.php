@@ -188,12 +188,12 @@ class ArrayList implements ArrayAccess, Countable, IteratorAggregate, JsonSerial
 
     public function offsetExists($offset)
     {
-        // TODO: Implement offsetExists() method.
+        return array_key_exists($offset, $this->items);
     }
 
     public function offsetGet($offset)
     {
-        // TODO: Implement offsetGet() method.
+        $this->items[$offset];
     }
 
     public function offsetSet($key, $value)
@@ -207,12 +207,12 @@ class ArrayList implements ArrayAccess, Countable, IteratorAggregate, JsonSerial
 
     public function offsetUnset($offset)
     {
-        // TODO: Implement offsetUnset() method.
+        unset($this->items[$offset]);
     }
 
     public function count()
     {
-        // TODO: Implement count() method.
+        return count($this->items);
     }
 
     public function jsonSerialize()
