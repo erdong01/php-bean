@@ -18,8 +18,11 @@ $list = ArrayList::new([10 => ['user' => 1000, 'skill' => 100, 'roles' => ['Role
 //    },
 //], $preserveKeys = true);
 
-$res = $list->groupBy(['skill', function ($item) {
-    return $item['roles'];
-}],true);
-//var_dump($res->toArr());
+$res = $list->groupBy(['skill',
+    function ($item) {
+        return $item['roles'];
+    },
+    'user'
+], true);
+var_dump($res->toArr());
 

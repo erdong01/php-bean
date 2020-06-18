@@ -4,12 +4,13 @@
 namespace Marstm\Support;
 
 
-use Illuminate\Support\Collection;
+use Illuminate\Support\HigherOrderCollectionProxy;
 use Marstm\Container\Container;
 
 trait Arr
 {
     use Container;
+
 
     private $array;
 
@@ -237,60 +238,4 @@ trait Arr
         return $this;
     }
 
-
-    public function groupBy($groupBy, $preserveKeys = false, &$results = [])
-    {
-        if (is_string($groupBy)) {
-            $groupKeys[] = $groupBy;
-        }
-        if (is_array($groupBy)) {
-            $nextGroups = $groupBy;
-            $groupBy = array_shift($nextGroups);
-            if (!$groupBy) return;
-        }
-
-        $groupByV = $this->valueRetriever($groupBy);
-        foreach ($this->items as $key => $value) {
-            if (is_object($groupByV)) {
-                $groupKeyArr = $groupByV($value);
-            } else {
-                $groupKeyArr = [$value[$groupBy]];
-
-            }
-            foreach ($groupKeyArr as $groupKey) {
-
-                if ($preserveKeys == false) {
-                    $results[$groupKey][] = $value;
-                } else {
-                    $results[$groupKey][$key] = $value;
-                }
-
-            }
-
-        }
-        var_dump($results);
-        die;
-        if (!empty($nextGroups)) {
-            $this->groupBy($nextGroups, $preserveKeys, $results);
-        }
-
-//        $this->items = $results;
-        return $this;
-    }
-
-    /**
-     * Run a map over each of the items.
-     *
-     * @param callable $callback
-     * @return static
-     */
-    public function map(callable $callback)
-    {
-        $keys = array_keys($this->items);
-
-        $items = array_map($callback, $this->items, $keys);
-        $this->items = array_combine($keys, $items);
-
-        return $this;
-    }
 }
