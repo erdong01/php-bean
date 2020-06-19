@@ -17,7 +17,7 @@ trait Arr
     /**
      * @param $e
      * @param null $type
-     * @return array|array[]|mixed
+     * @return array|array[]|mixed|void
      */
     private function objectArray($e, $type = null)
     {
@@ -25,13 +25,17 @@ trait Arr
         if (is_object($e)) {
             if ($this->isBean($e)) {
                 $arr = $this->beanToArr($e);
-
             } else if (is_object($e)) {
                 $arr = get_object_vars($e);
             }
+            if ($type == 3) {
+                $this->items[] = $arr;
+                return;
+            }
             return $arr;
         }
-        return array_map(function ($v) use ($type) {
+        $result = [];
+        foreach ($e as $k => $v) {
             if ($this->isBean($v)) {
                 $arr = $this->beanToArr($v);
             } else if (is_object($v)) {
@@ -41,11 +45,18 @@ trait Arr
             }
             if ($type === 1) {
                 array_unshift($this->items, $arr);
+            } else if ($type === 3) {
+                $this->items[$k] = $arr;
             } else if ($type === 2) {
                 array_splice($this->items, $this->index, 0, $arr);
+            } else {
+                $result[$k] = $arr;
             }
-            return $arr;
-        }, $e);
+        }
+        if ($type !== null) {
+            return;
+        }
+        return $result;
     }
 
     /**
@@ -337,7 +348,7 @@ trait Arr
      */
     public function diff($items)
     {
-        $this->setItems(array_diff($this->items, $this->getArrayableItems($items)));
+        $this->setItems(array_diff($this->getItems(), $this->getArrayableItems($items)));
         return $this;
     }
 
@@ -348,7 +359,7 @@ trait Arr
      */
     public function diffAssoc($items)
     {
-        $this->setItems(array_diff_assoc($this->items, $this->getArrayableItems($items)));
+        $this->setItems(array_diff_assoc($this->getItems(), $this->getArrayableItems($items)));
         return $this;
     }
 
@@ -359,7 +370,7 @@ trait Arr
      */
     public function diffKeys($items)
     {
-        $this->setItems(array_diff_key($this->items, $this->getArrayableItems($items)));
+        $this->setItems(array_diff_key($this->getItems(), $this->getArrayableItems($items)));
         return $this;
     }
 

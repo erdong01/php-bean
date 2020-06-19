@@ -6,15 +6,18 @@ use Marstm\ArrayList;
 
 require "../../vendor/autoload.php";
 
-$res = ArrayList::new([
+$arrayList = arrayList(['name' => 'Desk', 'price' => 100]);
+var_dump($arrayList->contains('Desk'));
+var_dump($arrayList->contains('New York'));
+
+$arrayList = arrayList([
     ['product' => 'Desk', 'price' => 200],
     ['product' => 'Chair', 'price' => 100],
 ]);
-$b = $res->contains('product', 'Bookcase');
-var_dump($b);
+var_dump($arrayList->contains('product', 'Bookcase'));
 
-$res = ArrayList::new([ 5]);
-$b = $res->contains(function ($value, $key) {
+
+$res = ArrayList::new([1, 2, 3, 4, 5]);
+var_dump($res->contains(function ($value, $key) {
     return $value > 5;
-});
-var_dump($b);
+}));

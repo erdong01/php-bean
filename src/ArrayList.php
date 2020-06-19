@@ -21,19 +21,25 @@ class ArrayList implements ArrayAccess, Enumerable
      */
     private $index;
 
-    public function __construct(...$items)
+    /**
+     * ArrayList constructor.
+     * @param array $items
+     * @param int $type
+     */
+    public function __construct($items = [])
     {
-        $this->objectArray($items, 1);
+        $this->objectArray($items, 3);
     }
 
     /**
-     * @param mixed ...$item
+     * @param array $items
      * @return ArrayList
      */
-    public static function new(...$item)
+    public static function new($items = [])
     {
-        return new self(...$item);
+        return new self($items);
     }
+
 
     /**
      * @param $index
@@ -152,21 +158,22 @@ class ArrayList implements ArrayAccess, Enumerable
         $groupByV = $this->valueRetriever($groupBy);
         foreach ($this->items as $key => $value) {
             if (is_object($groupByV)) {
-                $groupKeyArr = $groupByV($value);
+                $groupKeyArr = $groupByV($value, $key);
             } else {
                 $groupKeyArr = [$value[$groupBy]];
             }
+            if (!is_array($groupKeyArr)) {
+                $groupKeyArr = [$groupKeyArr];
+            }
             foreach ($groupKeyArr as $groupKey) {
-
                 if (!array_key_exists($groupKey, $results)) {
                     $results[$groupKey] = new static;
                 }
                 $results[$groupKey]->offsetSet($preserveKeys ? $key : null, $value);
             }
-
         }
-
-        $result = new static($results);
+        $result = new static();
+        $result->setItems($results);
         if (!empty($nextGroups)) {
             return $result->map->groupBy($nextGroups, $preserveKeys);
         }
