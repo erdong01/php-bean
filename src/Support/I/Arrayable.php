@@ -1,9 +1,12 @@
 <?php
 
+namespace Marstm\Support\I;
 
-namespace Marstm\Support;
 
-
+/**
+ * Interface Arrayable
+ * @package Marstm\Support\I
+ */
 interface Arrayable
 {
     /**

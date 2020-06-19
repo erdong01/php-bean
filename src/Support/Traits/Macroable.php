@@ -1,14 +1,16 @@
 <?php
 
-
-namespace Marstm\Support;
+namespace Marstm\Support\Traits;
 
 use Closure;
 use ReflectionClass;
 use ReflectionMethod;
 use BadMethodCallException;
 
-
+/**
+ * Trait Macroable
+ * @package Marstm\Support
+ */
 trait Macroable
 {
     /**

@@ -4,9 +4,10 @@
 namespace Marstm\Container;
 
 
+use Marstm\Support\I\Arrayable;
+
 trait Container
 {
-
     /**
      * @var array  The current globally available container
      */
@@ -64,6 +65,34 @@ trait Container
             return self::$globalInstance[$abstract];
         }
         return null;
+    }
+
+    /**
+     * @return array
+     */
+    public function getItems(): array
+    {
+        return $this->items;
+    }
+
+    /**
+     * @param array $items
+     */
+    public function setItems(array $items): void
+    {
+        $this->items = $items;
+    }
+
+    /**
+     * Get the collection of items as a plain array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return array_map(function ($value) {
+            return $value instanceof Arrayable ? $value->toArray() : $value;
+        }, $this->items);
     }
 
 }

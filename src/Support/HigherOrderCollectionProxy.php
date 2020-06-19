@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Marstm\Support;
-
 
 /**
  * @mixin \Marstm\Support\Arr

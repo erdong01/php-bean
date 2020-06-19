@@ -1,6 +1,6 @@
 <?php
 
-namespace Marstm\Support;
+namespace Marstm\Support\Traits;
 
 use Marstm\Container\Container;
 

@@ -2,25 +2,23 @@
 
 namespace Marstm;
 
-use Marstm\Support\Arrayable;
-use Marstm\Support\Macroable;
-use stdClass;
-use Countable;
-use Exception;
+use Marstm\Support\I\Enumerable;
+use Marstm\Support\Traits\Macroable;
 use ArrayAccess;
-use Traversable;
 use ArrayIterator;
-use CachingIterator;
-use JsonSerializable;
-use IteratorAggregate;
-use \Marstm\Support\Arr;
-use Marstm\Support\Bean;
+use Marstm\Support\Traits\Arr;
 
-class ArrayList implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable, Arrayable
+/**
+ * Class ArrayList
+ * @package Marstm
+ */
+class ArrayList implements ArrayAccess, Enumerable
 {
-    use  Arr;
-    use Macroable;
+    use  Arr, Macroable;
 
+    /**
+     * @var  void|null
+     */
     private $index;
 
     public function __construct($items = [])
@@ -53,17 +51,29 @@ class ArrayList implements ArrayAccess, Countable, IteratorAggregate, JsonSerial
         return $this->items[$index];
     }
 
+    /**
+     * @param $index
+     * @param $element
+     * @return array|mixed
+     */
     public function set($index, $element)
     {
         return $this->items[$index] = $this->objectArray($element);
     }
 
+    /**
+     * @param mixed ...$object
+     */
     public function add(...$object)
     {
         $this->objectArray($object, 1);
         return;
     }
 
+    /**
+     * @param $index
+     * @param mixed ...$element
+     */
     public function addAll($index, ...$element)
     {
         $this->index = $index;
@@ -71,16 +81,26 @@ class ArrayList implements ArrayAccess, Countable, IteratorAggregate, JsonSerial
         return;
     }
 
+    /**
+     * @param $index
+     */
     public function remove($index)
     {
         unset($this->items[$index]);
     }
 
+    /**
+     * @return int
+     */
     public function size()
     {
         return count($this->items);
     }
 
+    /**
+     * @param null $index
+     * @return bool
+     */
     public function isEmpty($index = null)
     {
         if ($index) {
@@ -96,7 +116,7 @@ class ArrayList implements ArrayAccess, Countable, IteratorAggregate, JsonSerial
     }
 
     /**
-     * 清除
+     * clear 清除
      */
     public function clear()
     {
@@ -112,9 +132,14 @@ class ArrayList implements ArrayAccess, Countable, IteratorAggregate, JsonSerial
         return array_pop($this->items);
     }
 
+    /**
+     * Group an associative array by a field or using a ArrayList.
+     * @param $groupBy
+     * @param bool $preserveKeys
+     * @return $this|void
+     */
     public function groupBy($groupBy, $preserveKeys = false)
     {
-
         if (is_string($groupBy)) {
             $groupKeys[] = $groupBy;
         }
@@ -124,6 +149,7 @@ class ArrayList implements ArrayAccess, Countable, IteratorAggregate, JsonSerial
             $groupBy = array_shift($nextGroups);
             if (!$groupBy) return;
         }
+
         $results = [];
         $groupByV = $this->valueRetriever($groupBy);
         foreach ($this->items as $key => $value) {
@@ -141,12 +167,12 @@ class ArrayList implements ArrayAccess, Countable, IteratorAggregate, JsonSerial
             }
 
         }
+
         $result = new static($results);
         if (!empty($nextGroups)) {
             return $result->map->groupBy($nextGroups, $preserveKeys);
         }
         return $result;
-
     }
 
     /**
@@ -183,7 +209,7 @@ class ArrayList implements ArrayAccess, Countable, IteratorAggregate, JsonSerial
 
     public function getIterator()
     {
-        // TODO: Implement getIterator() method.
+        return new ArrayIterator($this->items);
     }
 
     public function offsetExists($offset)
@@ -210,25 +236,4 @@ class ArrayList implements ArrayAccess, Countable, IteratorAggregate, JsonSerial
         unset($this->items[$offset]);
     }
 
-    public function count()
-    {
-        return count($this->items);
-    }
-
-    public function jsonSerialize()
-    {
-        // TODO: Implement jsonSerialize() method.
-    }
-
-    /**
-     * Get the collection of items as a plain array.
-     *
-     * @return array
-     */
-    public function toArray()
-    {
-        return array_map(function ($value) {
-            return $value instanceof Arrayable ? $value->toArray() : $value;
-        }, $this->items);
-    }
 }
