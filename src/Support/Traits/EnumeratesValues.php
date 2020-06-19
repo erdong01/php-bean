@@ -23,7 +23,7 @@ trait EnumeratesValues
         if (is_array($items)) {
             return $items;
         } elseif ($items instanceof ArrayList) {
-            return $items->items;
+            return $items->getItems();
         }
         return (array)$items;
     }

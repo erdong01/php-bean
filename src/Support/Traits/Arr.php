@@ -14,25 +14,24 @@ trait Arr
 
     private $array;
 
+    /**
+     * @param $e
+     * @param null $type
+     * @return array|array[]|mixed
+     */
     private function objectArray($e, $type = null)
     {
-        if (is_array($e)) {
-            if ($type === 1) {
-                $this->items = $e;
-            }
-            return $e;
-        }
         $arr = [];
         if (is_object($e)) {
             if ($this->isBean($e)) {
                 $arr = $this->beanToArr($e);
+
             } else if (is_object($e)) {
                 $arr = get_object_vars($e);
             }
             return $arr;
         }
-        $results = [];
-        foreach ($e as $k => $v) {
+        return array_map(function ($v) use ($type) {
             if ($this->isBean($v)) {
                 $arr = $this->beanToArr($v);
             } else if (is_object($v)) {
@@ -42,14 +41,11 @@ trait Arr
             }
             if ($type === 1) {
                 array_unshift($this->items, $arr);
-
-
             } else if ($type === 2) {
                 array_splice($this->items, $this->index, 0, $arr);
             }
-            $results[$k] = $arr;
-        }
-        return $results;
+            return $arr;
+        }, $e);
     }
 
     /**

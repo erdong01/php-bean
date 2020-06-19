@@ -1,5 +1,15 @@
  ### ArrayList是Bean数据扩展处理
 
+#### 加入 Bean数据
+
+```php
+
+$userBean = UserBean::new(0, "testName");
+arrayList($userBean);
+
+//[["user_id"=>0,"user_name"=>"test"]]
+
+```
 
 #### all()
 

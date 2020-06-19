@@ -3,9 +3,9 @@
 use \Marstm\ArrayList;
 
 if (!function_exists('arrayList')) {
-    function arrayList($items)
+    function arrayList(...$items)
     {
-        return ArrayList::new($items);
+        return ArrayList::new(...$items);
     }
 }
 

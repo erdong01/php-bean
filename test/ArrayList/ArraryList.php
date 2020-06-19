@@ -10,3 +10,4 @@ var_dump($average);
 $average = arrayList([1, 1, 2, 4])->avg();
 var_dump($average);
 //int(2)
+

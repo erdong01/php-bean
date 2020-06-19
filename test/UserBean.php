@@ -4,9 +4,8 @@ namespace Marstm\Test;
 
 require "../vendor/autoload.php";
 
-use Marstm\Support\Bean;
 use Marstm\ArrayList;
-use Marstm\Support\Arr;
+use Marstm\Support\Traits\Bean;
 
 class Base
 {
@@ -40,6 +39,8 @@ class Base
  */
 class UserBean extends Base
 {
+    use Bean;
+
     public function __construct($user_id, $user_name)
     {
         $this->setUserId($user_id);
@@ -95,7 +96,6 @@ class UserBean extends Base
         $this->user_name = $user_name;
     }
 
-    use Bean;
 
     /**
      * 用户id
@@ -115,7 +115,7 @@ class UserBean extends Base
 
 }
 
-$userBean = UserBean::new(0, "");
+$userBean = UserBean::new(0, "bbb");
 //$userBean->setUserName("teset");
 //$userBean->setUserId(111);
 $userBean->setIsRegister(false);
@@ -127,7 +127,7 @@ $userBean->setIsRegister(false);
 //$userBean2 = UserBean::bind(["user_id" => 12, "user_name" => "new"]);
 //var_dump($userBean2->toArr());
 
-$beanList = ArrayList::new();
+$beanList = ArrayList::new($userBean);
 
 $beanList->add($userBean);
 
@@ -146,4 +146,5 @@ $beanList4 = $beanList->get("beanList2");
 $beanList2->setUserName("teste");
 var_dump($beanList->toArr());
 
+//arrayList();
 

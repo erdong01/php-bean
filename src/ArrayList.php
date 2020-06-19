@@ -21,20 +21,18 @@ class ArrayList implements ArrayAccess, Enumerable
      */
     private $index;
 
-    public function __construct($items = [])
+    public function __construct(...$items)
     {
-        $this->items = $items;
+        $this->objectArray($items, 1);
     }
 
     /**
      * @param mixed ...$item
      * @return ArrayList
      */
-    public static function new($item = [])
+    public static function new(...$item)
     {
-        $i = new self();
-        $i->objectArray($item, 1);
-        return $i;
+        return new self(...$item);
     }
 
     /**
