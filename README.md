@@ -9,6 +9,6 @@ composer require marstm/bean
 
 ### 文档：
 
-[1.  Bean](/master/docs/Bean.md)
+[1.  Bean](/docs/Bean.md)
 
-[2.  ArrayList](/master/docs/ArrayList.md)
+[2.  ArrayList](/docs/ArrayList.md)
