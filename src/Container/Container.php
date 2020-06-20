@@ -95,4 +95,17 @@ trait Container
         }, $this->items);
     }
 
+    /**
+     * @param null $index
+     * @return bool
+     */
+    public function isEmpty($index = null)
+    {
+        if ($index) {
+            if (isset($this->items[$index]) && empty($this->items[$index])) {
+                return true;
+            }
+        }
+        return empty($this->items);
+    }
 }

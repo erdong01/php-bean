@@ -7,7 +7,7 @@ namespace Marstm;
  * Class Arr
  * @package App\Utils
  */
-class Arr
+class ArrayUtil
 {
     protected $instance;
 

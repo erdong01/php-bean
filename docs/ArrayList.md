@@ -256,3 +256,113 @@ var_dump($res->toArr());
 ];
 */
 ```
+
+#### countBy()
+countBy 方法计算集合中每个值的出现次数。默认情况下，该方法计算每个元素的出现次数：
+```php
+$collection = collect([1, 2, 2, 2, 3]);
+$counted = $collection->countBy();
+var_dump($counted->all());
+
+// [1 => 1, 2 => 3, 3 => 1]
+```
+但是，你也可以向 countBy 传递一个回调函数来计算自定义的值出现的次数:
+
+```php
+$arrayList = arrayList(['alice@gmail.com', 'bob@yahoo.com', 'carlos@gmail.com']);
+$arrayList = $arrayList->countBy(function ($email) {
+    return substr(strrchr($email, "@"), 1);
+});
+var_dump($arrayList->all());
+
+// ['gmail.com' => 2, 'yahoo.com' => 1]
+```
+
+#### crossJoin()
+crossJoin 方法交叉连接指定数组或集合的值，返回所有可能排列的笛卡尔积:
+```php
+$arrayList = arrayList([1, 2]);
+$matrix = $arrayList->crossJoin(['a', 'b']);
+$matrix->all();
+
+/*
+    [
+        [1, 'a'],
+        [1, 'b'],
+        [2, 'a'],
+        [2, 'b'],
+    ]
+*/
+
+$arrayList = arrayList([1, 2]);
+$matrix = $arrayList->crossJoin(['a', 'b'], ['I', 'II']);
+var_dump($matrix->all());
+
+/*
+    [
+        [1, 'a', 'I'],
+        [1, 'a', 'II'],
+        [1, 'b', 'I'],
+        [1, 'b', 'II'],
+        [2, 'a', 'I'],
+        [2, 'a', 'II'],
+        [2, 'b', 'I'],
+        [2, 'b', 'II'],
+    ]
+*/
+```
+#### duplicates()
+duplicates 方法从集合中检索并返回重复的值：
+```php
+$arrayList = arrayList(['a', 'b', 'a', 'c', 'b']);
+$res = $arrayList->duplicates();
+var_dump($res->all());
+// [2 => 'a', 4 => 'b']
+```
+```php
+$arrayList = arrayList([
+    ['email' => 'abigail@example.com', 'position' => 'Developer'],
+    ['email' => 'james@example.com', 'position' => 'Designer'],
+    ['email' => 'victoria@example.com', 'position' => 'Developer'],
+]);
+$res = $arrayList->duplicates('position');
+var_dump($res->all());
+
+// [2 => 'Developer']
+```
+#### each()
+each 方法用于循环集合项并将其传递到回调函数中：
+```php
+$collection->each(function ($item, $key) {
+    //
+});
+```
+
+如果你想中断对集合项的循环，那么就在你的回调函数中返回 false ：
+```php
+$collection->each(function ($item, $key) {
+    if (/* some condition */) {
+        return false;
+    }
+});
+```
+
+#### every()
+every 方法可用于验证集合中的每一个元素是否通过指定的条件测试：
+```php
+$res =arrayList([1, 2, 3, 4])->every(function ($value, $key) {
+    return $value > 2;
+});
+var_dump($res);
+
+// false
+```
+如果集合为空， every 将返回 true ：
+
+$collection = collect([]);
+```php
+$collection->every(function ($value, $key) {
+    return $value > 2;
+});
+//true
+```

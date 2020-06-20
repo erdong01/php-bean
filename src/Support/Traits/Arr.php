@@ -2,7 +2,10 @@
 
 namespace Marstm\Support\Traits;
 
+use Illuminate\Support\Collection;
+use Marstm\ArrayList;
 use Marstm\Container\Container;
+use Marstm\Support\I\Arrayable;
 
 /**
  * Trait Arr
@@ -100,6 +103,17 @@ trait Arr
     }
 
     /**
+     * Determine whether the given value is array accessible.
+     *
+     * @param mixed $value
+     * @return bool
+     */
+    public static function accessible($value)
+    {
+        return is_array($value) || $value instanceof ArrayAccess;
+    }
+
+    /**
      * Get the average value of a given key.
      *
      * @param callable|string|null $callback
@@ -156,17 +170,6 @@ trait Arr
         return !is_string($value) && is_callable($value);
     }
 
-    /**
-     * @param $value
-     * @return array|void
-     */
-    protected function valueRetriever($value)
-    {
-        if ($this->useAsCallable($value)) {
-            return $value;
-        }
-        return;
-    }
 
     /**
      * Chunk the underlying collection array.
@@ -183,19 +186,24 @@ trait Arr
         return $this;
     }
 
-    public function collapse()
+    /**
+     * Collapse an array of arrays into a single array.
+     * @param iterable $array
+     * @return mixed
+     */
+    public static function collapse($array)
     {
-        $array = $this->items;
-        $resultArr = [];
+        $results = [];
+
         foreach ($array as $values) {
-            if (is_array($values)) {
-                $resultArr = array_merge($resultArr, $values);
-            } else {
-                $this->objectArray($values);
+            if ($values instanceof ArrayList) {
+                $values = $values->all();
+            } elseif (!is_array($values)) {
+                continue;
             }
+            $results[] = $values;
         }
-        $this->items = $resultArr;
-        return $this;
+        return array_merge([], ...$results);
     }
 
     public function combine($values)
@@ -210,6 +218,168 @@ trait Arr
             $this->items[] = $item;
         }
         return $this;
+    }
+
+
+    /**
+     * Return the values from a single column in the input array
+     * @param $column
+     * @param null $index_key
+     * @return $this
+     */
+    public function column($column, $index_key = null)
+    {
+        $this->items = array_column($this->items, $column, $index_key);
+        return $this;
+    }
+
+
+    /**
+     * Determine if an item exists in the collection.
+     *
+     * @param mixed $key
+     * @param mixed $operator
+     * @param mixed $value
+     * @return bool
+     */
+    public function contains($key, $operator = null, $value = null)
+    {
+        if (func_num_args() == 1) {
+            if ($this->useAsCallable($key)) {
+                $placeholder = new \stdClass();
+                return $this->first($key, $placeholder) !== $placeholder;
+            }
+            return in_array($key, $this->getItems());
+        }
+        return $this->contains($this->operatorForWhere(...func_get_args()));
+    }
+
+    /**
+     * Cross join the given arrays, returning all possible permutations.
+     * @param mixed ...$arrays
+     * @return array|array[]
+     */
+    public static function crossJoin(...$arrays)
+    {
+        $results = [[]];
+
+        foreach ($arrays as $index => $array) {
+            $append = [];
+
+            foreach ($results as $product) {
+                foreach ($array as $item) {
+                    $product[$index] = $item;
+
+                    $append[] = $product;
+                }
+            }
+
+            $results = $append;
+        }
+        return $results;
+    }
+
+
+    /**
+     * Get the items in the collection that are not present in the given items.
+     * @param $items
+     * @return $this
+     */
+    public function diff($items)
+    {
+        $this->setItems(array_diff($this->getItems(), $this->getArrayableItems($items)));
+        return $this;
+    }
+
+    /**
+     * Get the items in the arrayList whose keys and values are not present in the given items.
+     * @param $items
+     * @return $this
+     */
+    public function diffAssoc($items)
+    {
+        $this->setItems(array_diff_assoc($this->getItems(), $this->getArrayableItems($items)));
+        return $this;
+    }
+
+    /**
+     * Get the items in the arr whose keys are not present in the given items.
+     * @param $items
+     * @return $this
+     */
+    public function diffKeys($items)
+    {
+        $this->setItems(array_diff_key($this->getItems(), $this->getArrayableItems($items)));
+        return $this;
+    }
+
+    /**
+     * Get the comparison function to detect duplicates.
+     *
+     * @param bool $strict
+     * @return \Closure
+     */
+    public function duplicateComparator($strict)
+    {
+        if ($strict) {
+            return function ($a, $b) {
+                return $b === $a;
+            };
+        }
+        return function ($a, $b) {
+            return $a == $b;
+        };
+    }
+
+
+    /**
+     * Determine if the given key exists in the provided array.
+     * @param $array
+     * @param $key
+     * @return bool
+     */
+    public static function exists($array, $key)
+    {
+        if ($array instanceof \ArrayAccess) {
+            return $array->offsetExists($key);
+        }
+        return array_key_exists($key, $array);
+    }
+
+    /**
+     * Get and remove the first item from the collection.
+     *
+     * @return mixed
+     */
+    public function shift()
+    {
+        return array_shift($this->items);
+    }
+
+    /**
+     * return value($default);
+     * @param $array
+     * @param callable|null $callback
+     * @param null $default
+     * @return mixed
+     */
+    public function first(callable $callback = null, $default = null)
+    {
+        $array = $this->items;
+        if (is_null($callback)) {
+            if (empty($array)) {
+                return bean_value($default);
+            }
+            foreach ($array as $item) {
+                return $item;
+            }
+        }
+        foreach ($array as $key => $value) {
+            if (call_user_func($callback, $value, $key)) {
+                return $value;
+            }
+        }
+        return bean_value($default);
     }
 
     /**
@@ -239,23 +409,33 @@ trait Arr
     }
 
     /**
-     * Return the values from a single column in the input array
-     * @param $column
-     * @param null $index_key
-     * @return $this
+     * Run a map over each of the items.
+     *
+     * @param callable $callback
+     * @return static
      */
-    public function column($column, $index_key = null)
+    public function map(callable $callback)
     {
-        $this->items = array_column($this->items, $column, $index_key);
+        $keys = array_keys($this->items);
+        $items = array_map($callback, $this->items, $keys);
+        $res = [];
+        foreach ($items as $itemsK => $itemsV) {
+            if ($itemsV instanceof Arrayable) {
+                $res[$itemsK] = $itemsV->toArray();
+            } else {
+                $res[$itemsK] = $itemsV;
+            }
+        }
+        $this->items = array_combine($keys, $res);
         return $this;
     }
 
-
     /**
-     * Get an operator checker callback.
+     * Get an operator checker arrayList.
      * @param $key
      * @param $operator
      * @param null $value
+     * @return \Closure
      */
     public function operatorForWhere($key, $operator, $value = null)
     {
@@ -296,83 +476,14 @@ trait Arr
     }
 
     /**
-     * return value($default);
-     * @param $array
-     * @param callable|null $callback
-     * @param null $default
-     * @return mixed
-     */
-    public function first(callable $callback = null, $default = null)
-    {
-        $array = $this->items;
-        if (is_null($callback)) {
-            if (empty($array)) {
-                return bean_value($default);
-            }
-            foreach ($array as $item) {
-                return $item;
-            }
-        }
-        foreach ($array as $key => $value) {
-            if (call_user_func($callback, $value, $key)) {
-                return $value;
-            }
-        }
-        return bean_value($default);
-    }
-
-    /**
-     * Determine if an item exists in the collection.
+     * Filter the array using the given callback.
      *
-     * @param mixed $key
-     * @param mixed $operator
-     * @param mixed $value
-     * @return bool
+     * @param array $array
+     * @param callable $callback
+     * @return array
      */
-    public function contains($key, $operator = null, $value = null)
+    public static function where($array, callable $callback)
     {
-        if (func_num_args() == 1) {
-            if ($this->useAsCallable($key)) {
-                $placeholder = new \stdClass();
-                return $this->first($key, $placeholder) !== $placeholder;
-            }
-            return in_array($key, $this->getItems());
-        }
-        return $this->contains($this->operatorForWhere(...func_get_args()));
+        return array_filter($array, $callback, ARRAY_FILTER_USE_BOTH);
     }
-
-    /**
-     * Get the items in the collection that are not present in the given items.
-     * @param $items
-     * @return $this
-     */
-    public function diff($items)
-    {
-        $this->setItems(array_diff($this->getItems(), $this->getArrayableItems($items)));
-        return $this;
-    }
-
-    /**
-     * Get the items in the arrayList whose keys and values are not present in the given items.
-     * @param $items
-     * @return $this
-     */
-    public function diffAssoc($items)
-    {
-        $this->setItems(array_diff_assoc($this->getItems(), $this->getArrayableItems($items)));
-        return $this;
-    }
-
-    /**
-     * Get the items in the arr whose keys are not present in the given items.
-     * @param $items
-     * @return $this
-     */
-    public function diffKeys($items)
-    {
-        $this->setItems(array_diff_key($this->getItems(), $this->getArrayableItems($items)));
-        return $this;
-    }
-
-
 }

@@ -2,6 +2,7 @@
 
 namespace Marstm;
 
+use Marstm\Support\I\Arrayable;
 use Marstm\Support\I\Enumerable;
 use Marstm\Support\Traits\Macroable;
 use ArrayAccess;
@@ -40,7 +41,115 @@ class ArrayList implements ArrayAccess, Enumerable
         return new self($items);
     }
 
+    /**
+     * @param mixed ...$object
+     */
+    public function add(...$object)
+    {
+        $this->objectArray($object, 1);
+        return;
+    }
 
+    /**
+     * @return $this
+     */
+    public function collapse()
+    {
+        $this->items = Arr::collapse($this->items);
+        return $this;
+    }
+
+    /**
+     * Count the number of items in the collection using a given truth test.
+     */
+    public function countBy($callback = null)
+    {
+        if (is_null($callback)) {
+            $callback = function ($value) {
+                return $value;
+            };
+        }
+        return $this->groupBy($callback)->map(function ($value) {
+            return $value->count();
+        });
+    }
+
+    /**
+     * Cross join with the given lists, returning all possible permutations.
+     * @param mixed ...$lists
+     * @return $this
+     */
+    public function crossJoin(...$lists)
+    {
+        $this->setItems(Arr::crossJoin($this->getItems(), ...array_map([$this, 'getArrayableItems'], $lists)));
+        return $this;
+    }
+
+    /**
+     * Retrieve duplicate items from the collection.
+     *
+     * @param callable|null $callback
+     * @param bool $strict
+     * @return static
+     */
+    public function duplicates($callback = null, $strict = false)
+    {
+        $items = $this->map($this->valueRetriever($callback));
+        $uniqueItems = $items->unique(null, $strict);
+
+        $compare = $this->duplicateComparator($strict);
+        $duplicates = new static();
+
+        foreach ($items as $key => $value) {
+            if ($uniqueItems->isNotEmpty() && $compare($value, $uniqueItems->first())) {
+                $uniqueItems->shift();
+
+            } else {
+                $duplicates->items[$key] = $value;
+            }
+        }
+        return $duplicates;
+
+    }
+
+    /**
+     * Execute a callback over each item.
+     * @param callable $callback
+     * @return $this
+     */
+    public function each(callable $callback)
+    {
+        foreach ($this as $key => $item) {
+            if ($callback($item, $key) === false) {
+                break;
+            }
+        }
+        return $this;
+    }
+    /**
+     * Determine if all items pass the given truth test.
+     *
+     * @param  string|callable  $key
+     * @param  mixed  $operator
+     * @param  mixed  $value
+     * @return bool
+     */
+    public function every($key, $operator = null, $value = null)
+    {
+        if (func_num_args() === 1) {
+            $callback = $this->valueRetriever($key);
+
+            foreach ($this as $k => $v) {
+                if (! $callback($v, $k)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return $this->every($this->operatorForWhere(...func_get_args()));
+    }
     /**
      * @param $index
      * @param $bean
@@ -65,14 +174,6 @@ class ArrayList implements ArrayAccess, Enumerable
         return $this->items[$index] = $this->objectArray($element);
     }
 
-    /**
-     * @param mixed ...$object
-     */
-    public function add(...$object)
-    {
-        $this->objectArray($object, 1);
-        return;
-    }
 
     /**
      * @param $index
@@ -101,23 +202,6 @@ class ArrayList implements ArrayAccess, Enumerable
         return count($this->items);
     }
 
-    /**
-     * @param null $index
-     * @return bool
-     */
-    public function isEmpty($index = null)
-    {
-        if ($index) {
-            if (isset($this->items[$index]) && empty($this->items[$index])) {
-                return true;
-            }
-        } else {
-            if (count($this->items)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * clear 清除
@@ -180,23 +264,18 @@ class ArrayList implements ArrayAccess, Enumerable
         return $result;
     }
 
-    /**
-     * Run a map over each of the items.
-     *
-     * @param callable $callback
-     * @return static
-     */
-    public function map(callable $callback)
-    {
-        $keys = array_keys($this->items);
-        $items = array_map($callback, $this->items, $keys);
-        $res = [];
-        foreach ($items as $itemsK => $itemsV) {
-            $res[$itemsK] = $itemsV->toArray();
-        }
 
-        $this->items = array_combine($keys, $res);
-        return $this;
+    /**
+     * Run a filter over each of the items.
+     * @param callable|null $callback
+     * @return $this
+     */
+    public function filter(callable $callback = null)
+    {
+        if ($callback) {
+            return new static(Arr::where($this->getItems(), $callback));
+        }
+        return new static(array_filter($this->getItems()));
     }
 
     /**
