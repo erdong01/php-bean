@@ -13,7 +13,7 @@ trait Bean
     use Container;
 
     /**
-     * 设置字段名
+     * Set field name
      * @param string $prefix
      * @return object|static|null
      */
@@ -39,6 +39,9 @@ trait Bean
         return $instance;
     }
 
+    /**
+     * @return mixed
+     */
     public function getProperties()
     {
         if ($this->instance->properties) {
@@ -50,7 +53,7 @@ trait Bean
     }
 
     /**
-     * 绑定数据
+     * Binding data
      * @param array $data
      * @return object|static
      */
@@ -74,7 +77,7 @@ trait Bean
     }
 
     /**
-     * 将下划线命名转换为驼峰式命名
+     * Convert underline naming to camel case naming
      * @param $str
      * @param bool $ucfirst
      * @return mixed|string
@@ -88,7 +91,7 @@ trait Bean
 
 
     /**
-     * 转换数组
+     * Convert to array
      * @return array
      */
     public function toArr()
@@ -109,7 +112,7 @@ trait Bean
     }
 
     /**
-     * 获取对象属性
+     * Get object properties
      * @return array
      */
     private function getClassAttr()
@@ -120,6 +123,7 @@ trait Bean
     }
 
     /**
+     * Release attribute
      * @param $arr
      */
     private function unset(&$arr)
@@ -127,6 +131,4 @@ trait Bean
         unset($arr['instance']);
         unset($arr['instanceArr']);
     }
-
-
 }

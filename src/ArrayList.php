@@ -126,12 +126,13 @@ class ArrayList implements ArrayAccess, Enumerable
         }
         return $this;
     }
+
     /**
      * Determine if all items pass the given truth test.
      *
-     * @param  string|callable  $key
-     * @param  mixed  $operator
-     * @param  mixed  $value
+     * @param string|callable $key
+     * @param mixed $operator
+     * @param mixed $value
      * @return bool
      */
     public function every($key, $operator = null, $value = null)
@@ -140,7 +141,7 @@ class ArrayList implements ArrayAccess, Enumerable
             $callback = $this->valueRetriever($key);
 
             foreach ($this as $k => $v) {
-                if (! $callback($v, $k)) {
+                if (!$callback($v, $k)) {
                     return false;
                 }
             }
@@ -150,6 +151,7 @@ class ArrayList implements ArrayAccess, Enumerable
 
         return $this->every($this->operatorForWhere(...func_get_args()));
     }
+
     /**
      * @param $index
      * @param $bean
@@ -204,12 +206,11 @@ class ArrayList implements ArrayAccess, Enumerable
 
 
     /**
-     * clear 清除
+     * clear
      */
     public function clear()
     {
         $this->items = [];
-
     }
 
     /**
