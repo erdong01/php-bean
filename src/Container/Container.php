@@ -40,12 +40,7 @@ trait Container
      */
     public function setInstance($entityName)
     {
-//        if (isset(self::$instance[$class_name]) && self::$instance[$class_name] instanceof static) {
-//            return self::$instance[$class_name];
-//        }
-//        $class_name = get_called_class();
         self::$globalInstance[$entityName] = new $entityName;
-
     }
 
     /**
@@ -81,18 +76,6 @@ trait Container
     public function setItems(array $items): void
     {
         $this->items = $items;
-    }
-
-    /**
-     * Get the collection of items as a plain array.
-     *
-     * @return array
-     */
-    public function toArray()
-    {
-        return array_map(function ($value) {
-            return $value instanceof Arrayable ? $value->toArray() : $value;
-        }, $this->items);
     }
 
     /**

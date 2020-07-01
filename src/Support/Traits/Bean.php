@@ -89,7 +89,6 @@ trait Bean
         return $ucfirst ? ucfirst($str) : $str;
     }
 
-
     /**
      * Convert to array
      * @return array

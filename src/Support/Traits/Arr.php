@@ -233,6 +233,17 @@ trait Arr
         return $this;
     }
 
+    /**
+     * Get the collection of items as a plain array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return array_map(function ($value) {
+            return $value instanceof Arrayable ? $value->toArray() : $value;
+        }, $this->items);
+    }
 
     /**
      * Determine if an item exists in the collection.
