@@ -1,10 +1,7 @@
 <?php
 
-
 namespace Marstm\Container;
 
-
-use Marstm\Support\I\Arrayable;
 
 trait Container
 {
@@ -22,6 +19,11 @@ trait Container
      * @var array
      */
     protected $properties;
+
+    /**
+     * @var string
+     */
+    protected $prefix;
 
     /**
      * @var array

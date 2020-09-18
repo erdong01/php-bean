@@ -13,21 +13,6 @@ trait Bean
     use Container;
 
     /**
-     * Set field name
-     * @param string $prefix
-     * @return object|static|null
-     */
-    public function setField(string $prefix = "")
-    {
-        $classAttr = $this->instance->getClassAttr();
-        foreach ($classAttr as $key => $value) {
-            $this->instance->$key = $prefix . $key;
-        }
-        return $this->instance;
-    }
-
-
-    /**
      * @param mixed ...$columns
      * @return object|static|null
      */
@@ -97,9 +82,10 @@ trait Bean
     {
         $arr = [];  //对象属性转数组
         $classAttr = $this->properties;
+
         foreach ($classAttr as $v) {
             $func = 'get' . $this->convertUnder($v);
-            if (!method_exists($this->instance, $func) || !property_exists($this->instance, $v)) {
+            if (!method_exists($this->instance, $func) || !property_exists($this->instance, $v) || !$this->{$v}) {
                 continue;
             }
             $val = $this->$func();
@@ -129,5 +115,6 @@ trait Bean
     {
         unset($arr['instance']);
         unset($arr['instanceArr']);
+        unset($arr['properties']);
     }
 }

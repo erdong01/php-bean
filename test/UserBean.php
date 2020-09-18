@@ -39,43 +39,18 @@ class Base
  */
 class UserBean extends Base
 {
-    use Bean;
-
-    public function __construct($user_id, $user_name)
-    {
-        $this->setUserId($user_id);
-        $this->setUserName($user_name);
-    }
-
     /**
-     * @return bool|null
+     * @return int
      */
-    public function getIsRegister(): ?bool
-    {
-        return $this->is_register;
-    }
-
-    /**
-     * @param bool|null $is_register
-     */
-    public function setIsRegister(?bool $is_register): void
-    {
-        $this->is_register = $is_register;
-    }
-
-
-    /**
-     * @return int|null
-     */
-    public function getUserId(): ?int
+    public function getUserId(): int
     {
         return $this->user_id;
     }
 
     /**
-     * @param int|null $user_id
+     * @param int $user_id
      */
-    public function setUserId(?int $user_id): void
+    public function setUserId(int $user_id): void
     {
         $this->user_id = $user_id;
     }
@@ -96,10 +71,28 @@ class UserBean extends Base
         $this->user_name = $user_name;
     }
 
+    /**
+     * @return bool|null
+     */
+    public function getIsRegister(): ?bool
+    {
+        return $this->is_register;
+    }
+
+    /**
+     * @param bool|null $is_register
+     */
+    public function setIsRegister(?bool $is_register): void
+    {
+        $this->is_register = $is_register;
+    }
+
+    use Bean;
+
 
     /**
      * 用户id
-     * @var int|null #整型
+     * @var int #整型
      */
     private $user_id;
     /**
@@ -115,23 +108,25 @@ class UserBean extends Base
 
 }
 
-$userBean = UserBean::new(0, "bbb");
+
+//$userBean = UserBean::new(0, "bbb");
 //$userBean->setUserName("teset");
 //$userBean->setUserId(111);
-$userBean->setIsRegister(false);
+//$userBean->setIsRegister(false);
 
-//$userBean1 = UserBean::new()->setField("user.");
-//var_dump($userBean1->toArr());
+$userBean1 = UserBean::new();
+$userBean1->setUserName("test");
+var_dump($userBean1->toArr());
 //var_dump($userBean->toArr());
-//
+
 //$userBean2 = UserBean::bind(["user_id" => 12, "user_name" => "new"]);
 //var_dump($userBean2->toArr());
 
-$beanList = ArrayList::new($userBean);
+//$beanList = ArrayList::new($userBean);
 
-$beanList->add($userBean);
+//$beanList->add($userBean);
 
-$beanList2 = UserBean::new(22, "test");
+//$beanList2 = UserBean::new(22, "test");
 //$beanList->add($beanList2);
 //$beanList->add(["bb" => "aaa"]);
 //$beanList->add(["ddddddd"]);
@@ -139,12 +134,15 @@ $beanList2 = UserBean::new(22, "test");
 //$beanList->add($b);
 //$beanList->addAll(null, ["ffff" => "hhhh"]);
 //Arr::new();
-$set = $beanList->set("beanList2", $beanList2);
-$beanList3 = UserBean::new(null, null);
+//$set = $beanList->set("beanList2", $beanList2);
+//$beanList3 = UserBean::new(null, null);
 
-$beanList4 = $beanList->get("beanList2");
-$beanList2->setUserName("teste");
-var_dump($beanList->toArr());
+//$beanList4 = $beanList->get("beanList2");
+//$beanList2->setUserName("teste");
+//var_dump($beanList->toArr());
 
 //arrayList();
 
+$user = UserBean::new();
+$user->setUserName("test");
+var_dump($user->toArr());
