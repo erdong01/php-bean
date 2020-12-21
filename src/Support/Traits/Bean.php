@@ -87,7 +87,7 @@ trait Bean
             $func = 'get' . $this->convertUnder($v);
             if (!method_exists($this->instance, $func)
                 || !property_exists($this->instance, $v)
-                || !!isset($this->{$v})) {
+                || !isset($this->{$v})) {
                 continue;
             }
             $val = $this->$func();
