@@ -3,6 +3,7 @@
 namespace Marstm\Support\Traits;
 
 use Marstm\Container\Container;
+use Marstm\Laravel\Model;
 
 /**
  * Class Bean
@@ -10,7 +11,7 @@ use Marstm\Container\Container;
  */
 trait Bean
 {
-    use Container;
+    use Container, Model;
 
     /**
      * @param mixed ...$columns
@@ -82,10 +83,11 @@ trait Bean
     {
         $arr = [];  //对象属性转数组
         $classAttr = $this->properties;
-
         foreach ($classAttr as $v) {
             $func = 'get' . $this->convertUnder($v);
-            if (!method_exists($this->instance, $func) || !property_exists($this->instance, $v) || !$this->{$v}) {
+            if (!method_exists($this->instance, $func)
+                || !property_exists($this->instance, $v)
+                || !!isset($this->{$v})) {
                 continue;
             }
             $val = $this->$func();
