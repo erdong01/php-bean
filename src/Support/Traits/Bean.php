@@ -47,7 +47,19 @@ trait Bean
     {
         $instance = new static();
         $instance->instance = $instance;
-        $classAttr = $instance->instance->properties;
+        $instance->bindData($data);
+
+    }
+
+    /**
+     * @param array $data
+     * @return object|static
+     */
+    public function bindData($data = [])
+    {
+        $instance = $this->instance;
+        $classAttr = $this->instance->properties;
+
         foreach ($classAttr as $key) {
             $func = 'set' . $instance::convertUnder($key);
             if (!function_exists($func) || !property_exists($key)) {
@@ -59,6 +71,7 @@ trait Bean
                 $instance->instance->$func($data->$key);
             }
         }
+
         return $instance->instance;
     }
 
