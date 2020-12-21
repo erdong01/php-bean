@@ -7,10 +7,9 @@ namespace Marstm\Math;
 trait Math
 {
 
-    public function add($left_operand, $right_operand, $scale = 0)
+    public function add($column, $amount = 1, $scale = 0)
     {
-        $res = bcadd($left_operand, $right_operand);
-        $this->{$left_operand} = $res;
-        return $res;
+
+        return $this->{$column} = bcadd($this->{$column}, $amount, $scale);
     }
 }
