@@ -102,6 +102,9 @@ trait Model
      */
     public function delete()
     {
+        foreach ($this->toArr() as $att => $v) {
+            $this->where($att, $v);
+        }
         return $this->getModel()->delete();
     }
 }
