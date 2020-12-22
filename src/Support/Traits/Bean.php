@@ -49,7 +49,7 @@ trait Bean
         $instance->instance = $instance;
         $instance->setProperties();
         $instance->bindData($data);
-
+        return $instance;
     }
 
     /**
@@ -62,7 +62,8 @@ trait Bean
         $classAttr = $this->instance->properties;
         foreach ($classAttr as $key) {
             $func = 'set' . $instance::convertUnder($key);
-            if (!function_exists($func) || !property_exists($key)) {
+            if (!method_exists($instance, $func)
+                || !property_exists($instance, $key)) {
                 continue;
             }
             if (isset($data[$key])) {
@@ -71,7 +72,6 @@ trait Bean
                 $instance->instance->$func($data->$key);
             }
         }
-
         return $instance->instance;
     }
 
