@@ -21,14 +21,14 @@ trait Bean
     {
         $instance = new self(...$columns);
         $instance->instance = $instance;
-        $instance->getProperties();
+        $instance->setProperties();
         return $instance;
     }
 
     /**
      * @return mixed
      */
-    public function getProperties()
+    public function setProperties()
     {
         if ($this->instance->properties) {
             return $this->instance->properties;
@@ -45,8 +45,9 @@ trait Bean
      */
     public static function bind($data = [])
     {
-        $instance = new static();
+        $instance = new self();
         $instance->instance = $instance;
+        $instance->setProperties();
         $instance->bindData($data);
 
     }
@@ -59,7 +60,6 @@ trait Bean
     {
         $instance = $this->instance;
         $classAttr = $this->instance->properties;
-
         foreach ($classAttr as $key) {
             $func = 'set' . $instance::convertUnder($key);
             if (!function_exists($func) || !property_exists($key)) {
