@@ -2,6 +2,8 @@
 
 namespace Marstm\Laravel;
 
+use Illuminate\Database\Eloquent\Builder;
+
 trait Model
 {
     /**
@@ -69,15 +71,29 @@ trait Model
 
     /**
      * @param array $options
-     * @return $this
+     * @return bool
      */
     public function save(array $options = [])
     {
         foreach ($this->toArr() as $att => $v) {
             $this->attributes[$att] = $v;
         }
-        $query = parent::save();
-        $arr = $query->toArr();
+        return parent::save();
+    }
+
+    /**
+     * Save a new model and return the instance.
+     *
+     * @param array $attributes
+     * @return $this|null
+     */
+    public function create(array $attributes = [])
+    {
+        $query = parent::create($this->toArr());
+        if ($query == null) {
+            return null;
+        }
+        $arr = $query->toArray();
         $this->original = $arr;
         $this->attributes = $arr;
         $this->exists = true;
