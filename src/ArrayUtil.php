@@ -29,7 +29,7 @@ class ArrayUtil
      */
     public static function new()
     {
-        $instance = new static();
+        $instance = new self();
         $instance->setInstance($instance);
         return $instance;
     }

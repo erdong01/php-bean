@@ -2,7 +2,6 @@
 
 namespace Marstm\Support\Traits;
 
-use Illuminate\Support\Collection;
 use Marstm\ArrayList;
 use Marstm\Container\Container;
 use Marstm\Support\I\Arrayable;

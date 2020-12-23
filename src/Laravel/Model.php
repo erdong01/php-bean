@@ -19,7 +19,7 @@ trait Model
     {
         $query = parent::find($id, $columns = ['*']);
         $arr = $query->toArray();
-        $this->original = $query->toArray();
+        $this->original = $arr;
         $this->attributes = $arr;
         $this->exists = true;
         return $this->instance->bindData($query);
@@ -77,12 +77,13 @@ trait Model
             $this->attributes[$att] = $v;
         }
         $query = parent::save();
-        $arr = $query->toArray();
-        $this->original = $query->toArray();
+        $arr = $query->toArr();
+        $this->original = $arr;
         $this->attributes = $arr;
         $this->exists = true;
         return $this->instance->bindData($query);
     }
+
     /**
      * Update a record in the database.
      *
