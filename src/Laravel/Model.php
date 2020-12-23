@@ -75,8 +75,10 @@ trait Model
      */
     public function save(array $options = [])
     {
-        foreach ($this->toArr() as $att => $v) {
-            $this->attributes[$att] = $v;
+        if ($this->properties) {
+            foreach ($this->toArr() as $att => $v) {
+                $this->attributes[$att] = $v;
+            }
         }
         return parent::save();
     }
@@ -89,15 +91,16 @@ trait Model
      */
     public function create(array $attributes = [])
     {
-        $query = parent::create($this->toArr());
-        if ($query == null) {
-            return null;
+        foreach ($this->toArr() as $att => $v) {
+            $this->attributes[$att] = $v;
         }
+        $attributes = array_merge($attributes, $this->attributes);
+        $query = $this->getModel()->create($attributes);
         $arr = $query->toArray();
         $this->original = $arr;
         $this->attributes = $arr;
         $this->exists = true;
-        return $this->instance->bindData($query);
+        return $this->instance->bindData($arr);
     }
 
     /**
