@@ -69,15 +69,20 @@ trait Model
 
     /**
      * @param array $options
+     * @return $this
      */
     public function save(array $options = [])
     {
         foreach ($this->toArr() as $att => $v) {
             $this->attributes[$att] = $v;
         }
-        parent::save();
+        $query = parent::save();
+        $arr = $query->toArray();
+        $this->original = $query->toArray();
+        $this->attributes = $arr;
+        $this->exists = true;
+        return $this->instance->bindData($query);
     }
-
     /**
      * Update a record in the database.
      *
