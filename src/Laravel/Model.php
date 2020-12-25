@@ -3,13 +3,44 @@
 namespace Marstm\Laravel;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
+use Marstm\Container\Container;
 
 trait Model
 {
+    use Container;
+
     /**
      * @var \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Query\Builder
      */
     protected $model;
+
+    /**
+     * Execute the query and get the first result.
+     *
+     * @param array|string $columns
+     * @return \Illuminate\Database\Eloquent\Model|object|static|null
+     */
+    public function first($columns = ['*'])
+    {
+        dd($this->getModel()->getQuery());
+        $query = $this->getModel()->getQuery()->onceWithColumns(Arr::wrap($columns), function () {
+            return $this->processor->processSelect($this, $this->runSelect());
+        });
+        dd($query);
+    }
+
+    /**
+     * Set the columns to be selected.
+     *
+     * @param array|mixed $columns
+     * @return $this
+     */
+    public function select($columns = ['*'])
+    {
+        $this->getModel()->select($columns);
+        return $this;
+    }
 
     /**
      * Find a model by its primary key.
