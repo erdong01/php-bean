@@ -2,7 +2,6 @@
 
 namespace Marstm\Laravel;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Marstm\Container\Container;
 
@@ -23,11 +22,41 @@ trait Model
      */
     public function first($columns = ['*'])
     {
-        dd($this->getModel()->getQuery());
-        $query = $this->getModel()->getQuery()->onceWithColumns(Arr::wrap($columns), function () {
-            return $this->processor->processSelect($this, $this->runSelect());
-        });
-        dd($query);
+        $query = $this->onceWithColumns(\Marstm\Arr::wrap($columns));
+        return $this->bindData(arrayList($query)->first());
+    }
+
+    public function get($columns = ['*'])
+    {
+        $query = $this->onceWithColumns(Arr::wrap($columns));
+        return arrayList($query);
+    }
+
+    /**
+     * Execute the given callback while selecting the given columns.
+     *
+     * After running the callback, the columns are reset to the original value.
+     *
+     * @param array $columns
+     * @param callable $callback
+     * @return mixed
+     */
+    protected function onceWithColumns($columns)
+    {
+        $query = $this->getModel()->getQuery();
+        $original = $query->columns;
+        if (is_null($original)) {
+            $query->columns = $columns;
+            $this->getModel()->setQuery($query);
+        }
+        $select = $query->connection->select(
+            $query->toSql(), $query->getBindings(), !$query->useWritePdo
+        );
+        $result = $query->processor->processSelect($query, $select);
+
+        $query->columns = $original;
+        $this->getModel()->setQuery($query);
+        return $result;
     }
 
     /**
