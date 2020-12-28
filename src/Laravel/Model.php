@@ -2,11 +2,12 @@
 
 namespace Marstm\Laravel;
 
+use Marstm\Container\Container;
 use Marstm\Support\Traits\Arr;
 
 trait Model
 {
-    use Arr;
+    use Container;
 
     /**
      * @var \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Query\Builder

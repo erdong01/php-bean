@@ -5,6 +5,7 @@ namespace Marstm;
 
 
 use Marstm\Support\Traits\Macroable;
+use Marstm\Support\Traits\Arr as BaseArr;
 
 /**
  * Class Arr
@@ -12,5 +13,5 @@ use Marstm\Support\Traits\Macroable;
  */
 class Arr
 {
-    use Macroable, \Marstm\Support\Traits\Arr;
+    use Macroable, BaseArr;
 }

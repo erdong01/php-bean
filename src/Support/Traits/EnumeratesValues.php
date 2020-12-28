@@ -3,6 +3,7 @@
 namespace Marstm\Support\Traits;
 
 use Marstm\ArrayList;
+use Marstm\Container\Container;
 use Marstm\Support\I\Arrayable;
 
 /**
@@ -11,6 +12,17 @@ use Marstm\Support\I\Arrayable;
  */
 trait EnumeratesValues
 {
+    use Arr, Container;
+
+    /**
+     * Determine if the given value is callable, but not a string.
+     * @param $value
+     * @return bool
+     */
+    protected function useAsCallable($value)
+    {
+        return !is_string($value) && is_callable($value);
+    }
 
     /**
      * Results array of items from ArrayList or Arrayable.
@@ -107,4 +119,163 @@ trait EnumeratesValues
         return !$this->isEmpty();
     }
 
+    /**
+     * Filter items by the given key value pair.
+     *
+     * @param string $key
+     * @param mixed $operator
+     * @param mixed $value
+     * @return static
+     */
+    public function where($key, $operator = null, $value = null)
+    {
+        return $this->filter($this->operatorForWhere(...func_get_args()));
+    }
+
+    /**
+     * Get the sum of the given values.
+     * @param null $callback
+     * @return float|int|mixed
+     */
+    public function sum($callback = null)
+    {
+        if (is_null($callback)) {
+            return array_sum($this->getItems());
+        }
+
+        if (is_string($callback)) {
+            return array_sum(array_column($this->getItems(), $callback));
+        }
+        $callback = $this->valueRetriever($callback);
+        if (is_object($callback)) {
+            return $this->reduce(function ($result, $item) use ($callback) {
+                return $result + $callback($item);
+            }, 0);
+        }
+        return array_sum($callback);
+    }
+
+    public function beanToArr($object)
+    {
+        return $object->toArr();
+    }
+
+    /**
+     * @param $e
+     * @param null $type
+     * @return array|array[]|mixed|void
+     */
+    private function objectArray($e, $type = null)
+    {
+        $arr = [];
+        if (is_object($e)) {
+            if ($this->isBean($e)) {
+                $arr = $this->beanToArr($e);
+            } else if (is_object($e)) {
+                $arr = get_object_vars($e);
+            }
+            if ($type == 3) {
+                $this->items[] = $arr;
+                return;
+            }
+            return $arr;
+        }
+        $result = [];
+        foreach ($e as $k => $v) {
+            if ($this->isBean($v)) {
+                $arr = $this->beanToArr($v);
+            } else if (is_object($v)) {
+                $arr = get_object_vars($v);
+            } else {
+                $arr = $v;
+            }
+            if ($type === 1) {
+                array_unshift($this->items, $arr);
+            } else if ($type === 3) {
+                $this->items[$k] = $arr;
+            } else if ($type === 2) {
+                array_splice($this->items, $this->index, 0, $arr);
+            } else {
+                $result[$k] = $arr;
+            }
+        }
+        if ($type !== null) {
+            return;
+        }
+        return $result;
+    }
+
+    public function isBean($object)
+    {
+        if (is_object($object) && method_exists($object, 'toArr')) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Get an operator checker arrayList.
+     * @param $key
+     * @param $operator
+     * @param null $value
+     * @return \Closure
+     */
+    public function operatorForWhere($key, $operator, $value = null)
+    {
+        if (func_num_args() === 1) {
+            $value = true;
+
+            $operator = '=';
+        }
+
+        if (func_num_args() == 2) {
+            $value = $operator;
+            $operator = "=";
+        }
+        return function ($item) use ($key, $operator, $value) {
+            $retrieved = $key;
+            $strings = array_filter([$retrieved, $value], function ($value) {
+                return is_string($value) || (is_object($value)) && method_exists($value, '__toString');
+            });
+            if (count($strings) < 2 && count(array_filter([$key, $value], 'is_object')) == 1) {
+                return in_array($operator, ['!=', '<>', '!==']);
+            }
+            switch ($operator) {
+                default:
+                case '=':
+                case '==':
+                    return $retrieved == $value;
+                case '!=':
+                case '<>':
+                    return $retrieved != $value;
+                case '<':
+                    return $retrieved < $value;
+                case '>':
+                    return $retrieved > $value;
+                case '<=':
+                    return $retrieved <= $value;
+                case '>=':
+                    return $retrieved >= $value;
+                case '===':
+                    return $retrieved === $value;
+                case '!==':
+                    return $retrieved !== $value;
+            }
+        };
+    }
+
+    /**
+     * If the given value is not an array and not null, wrap it in one.
+     *
+     * @param mixed $value
+     * @return array
+     */
+    public static function wrap($value)
+    {
+        if (is_null($value)) {
+            return [];
+        }
+
+        return is_array($value) ? $value : [$value];
+    }
 }
