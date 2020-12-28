@@ -17,7 +17,7 @@ trait Model
      * Execute the query and get the first result.
      *
      * @param array|string $columns
-     * @return \Illuminate\Database\Eloquent\Model|object|static|null
+     * @return $this;
      */
     public function first($columns = ['*'])
     {
@@ -25,11 +25,16 @@ trait Model
         return $this->bindData($this->objectArray($query)->first());
     }
 
+    /**
+     * @param string[] $columns
+     * @return \Marstm\ArrayList
+     */
     public function get($columns = ['*'])
     {
         $query = $this->onceWithColumns(Arr::wrap($columns));
-        $this->setItems($this->objectArray($query));
-        return $this;
+        $aL = arrayList($query);
+        $aL->setInstance($this);
+        return $aL;
     }
 
     /**
