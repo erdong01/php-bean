@@ -2,12 +2,11 @@
 
 namespace Marstm\Laravel;
 
-use Illuminate\Support\Arr;
-use Marstm\Container\Container;
+use Marstm\Support\Traits\Arr;
 
 trait Model
 {
-    use Container;
+    use Arr;
 
     /**
      * @var \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Query\Builder
@@ -23,13 +22,14 @@ trait Model
     public function first($columns = ['*'])
     {
         $query = $this->onceWithColumns(\Marstm\Arr::wrap($columns));
-        return $this->bindData(arrayList($query)->first());
+        return $this->bindData($this->objectArray($query)->first());
     }
 
     public function get($columns = ['*'])
     {
         $query = $this->onceWithColumns(Arr::wrap($columns));
-        return arrayList($query);
+        $this->setItems($this->objectArray($query));
+        return $this;
     }
 
     /**
