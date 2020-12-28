@@ -359,10 +359,14 @@ class ArrayList implements ArrayAccess, Enumerable
      */
     public function filter(callable $callback = null)
     {
+        $new = new self();
+        $new->setInstance($this->getInstance());
         if ($callback) {
-            return new static(Arr::where($this->getItems(), $callback));
+            $new->setItems(Arr::where($this->getItems(), $callback));
+            return $new;
         }
-        return new static(array_filter($this->getItems()));
+        $new->setItems(Arr::where($this->getItems(), $callback));
+        return $new;
     }
 
     /**
@@ -541,4 +545,13 @@ class ArrayList implements ArrayAccess, Enumerable
         return Arr::first($this->items, $callback, $default);
     }
 
+    /**
+     * @return object|static|null
+     * @throws \Exception
+     */
+    public function firstBean(callable $callback = null, $default = null)
+    {
+        $instance = $this->getInstance();
+        return $instance->bindData(Arr::first($this->items, $callback, $default));
+    }
 }

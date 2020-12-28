@@ -233,13 +233,15 @@ trait EnumeratesValues
             $operator = "=";
         }
         return function ($item) use ($key, $operator, $value) {
-            $retrieved = $key;
+            $retrieved = bean_data_get($item, $key);
             $strings = array_filter([$retrieved, $value], function ($value) {
-                return is_string($value) || (is_object($value)) && method_exists($value, '__toString');
+                return is_string($value) || (is_object($value) && method_exists($value, '__toString'));
             });
-            if (count($strings) < 2 && count(array_filter([$key, $value], 'is_object')) == 1) {
+
+            if (count($strings) < 2 && count(array_filter([$retrieved, $value], 'is_object')) == 1) {
                 return in_array($operator, ['!=', '<>', '!==']);
             }
+
             switch ($operator) {
                 default:
                 case '=':
@@ -264,18 +266,4 @@ trait EnumeratesValues
         };
     }
 
-    /**
-     * If the given value is not an array and not null, wrap it in one.
-     *
-     * @param mixed $value
-     * @return array
-     */
-    public static function wrap($value)
-    {
-        if (is_null($value)) {
-            return [];
-        }
-
-        return is_array($value) ? $value : [$value];
-    }
 }

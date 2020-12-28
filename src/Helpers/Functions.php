@@ -98,7 +98,7 @@ if (!function_exists('bean_data_get')) {
     }
 }
 
-if (!function_exists('data_get')) {
+if (!function_exists('bean_data_get')) {
     /**
      * Get an item from an array or object using "dot" notation.
      *
@@ -107,7 +107,7 @@ if (!function_exists('data_get')) {
      * @param mixed $default
      * @return mixed
      */
-    function data_get($target, $key, $default = null)
+    function bean_data_get($target, $key, $default = null)
     {
         if (is_null($key)) {
             return $target;
@@ -126,7 +126,7 @@ if (!function_exists('data_get')) {
                 $result = [];
 
                 foreach ($target as $item) {
-                    $result[] = data_get($item, $key);
+                    $result[] = bean_data_get($item, $key);
                 }
 
                 return in_array('*', $key) ? Arr::collapse($result) : $result;

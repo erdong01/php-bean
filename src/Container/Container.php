@@ -6,6 +6,11 @@ namespace Marstm\Container;
 trait Container
 {
     /**
+     * @var array
+     */
+    protected $items = [];
+
+    /**
      * @var array  The current globally available container
      */
     protected static $globalInstance;
@@ -30,19 +35,46 @@ trait Container
      */
     protected $beanList = [];
 
-    /**
-     * @var array
-     */
-    protected $items = [];
 
     /**
      * 设置实例
      * @param $instance
      * @param $entityName
      */
-    public function setInstance($entityName)
+    public function setGlobalInstance($entity)
     {
-        self::$globalInstance[$entityName] = new $entityName;
+        if (is_string($entity)) {
+            self::$globalInstance[$entity] = $entity;
+        }
+        if (is_object($entity)) {
+            self::$globalInstance[get_class($entity)] = $entity;
+        }
+    }
+
+    /**
+     * 设置实例
+     * @param $instance
+     * @param $entityName
+     */
+    public function setInstance($entity)
+    {
+
+        if (is_string($entity)) {
+            $this->instance = new $entity;
+        }
+        if (is_object($entity)) {
+            $this->instance = $entity;
+        }
+    }
+
+    /**
+     * 获取实例
+     * @param $instance
+     * @param $entityName
+     */
+    public function getInstance()
+    {
+        return $this->instance;
     }
 
     /**
