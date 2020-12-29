@@ -43,12 +43,14 @@ trait Container
      */
     public function setGlobalInstance($entity)
     {
+        if (is_object($entity)) {
+            self::$globalInstance[get_class($entity)] = $entity;
+            return;
+        }
         if (is_string($entity)) {
             self::$globalInstance[$entity] = new $entity;
         }
-        if (is_object($entity)) {
-            self::$globalInstance[get_class($entity)] = $entity;
-        }
+        return;
     }
 
     /**
@@ -60,9 +62,7 @@ trait Container
     }
 
     /**
-     * 设置实例
-     * @param $instance
-     * @param $entityName
+     * @param object|static $entity
      */
     public function setInstance($entity)
     {
@@ -73,14 +73,23 @@ trait Container
         if (is_object($entity)) {
             $this->instance = $entity;
         }
+        $this->setGlobalInstance($this->instance);
     }
 
     /**
      * 获取实例
-     * @param $instance
-     * @param $entityName
+     * @return object|static
      */
     public function getInstance()
+    {
+        return $this->instance;
+    }
+
+    /**
+     * 获取实例
+     * @return object|static
+     */
+    public function bean()
     {
         return $this->instance;
     }

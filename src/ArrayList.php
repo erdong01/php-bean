@@ -30,6 +30,7 @@ class ArrayList implements ArrayAccess, Enumerable
      */
     public function __construct($items = [])
     {
+        if (empty($items)) return;
         $this->objectArray($items, 3);
     }
 
@@ -558,7 +559,7 @@ class ArrayList implements ArrayAccess, Enumerable
     public function push()
     {
         $instance = $this->getInstance();
-        $this->clearInstance();
         $this->add($instance->toArr());
+        $this->clearInstance();
     }
 }

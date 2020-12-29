@@ -26,7 +26,7 @@ trait Bean
     }
 
     /**
-     * @return \Marstm\ArrayList
+     * @return \Marstm\ArrayList|object|static
      */
     public static function ArrayList()
     {
