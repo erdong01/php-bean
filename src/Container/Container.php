@@ -44,11 +44,19 @@ trait Container
     public function setGlobalInstance($entity)
     {
         if (is_string($entity)) {
-            self::$globalInstance[$entity] = $entity;
+            self::$globalInstance[$entity] = new $entity;
         }
         if (is_object($entity)) {
             self::$globalInstance[get_class($entity)] = $entity;
         }
+    }
+
+    /**
+     * 清空实例
+     */
+    public function clearInstance()
+    {
+        $this->setInstance($this->getAlias(get_class($this->instance)));
     }
 
     /**

@@ -26,6 +26,16 @@ trait Bean
     }
 
     /**
+     * @return \Marstm\ArrayList
+     */
+    public static function ArrayList()
+    {
+        $aL = arrayList();
+        $aL->setInstance(self::new());
+        return $aL;
+    }
+
+    /**
      * @return mixed
      */
     public function setProperties()
@@ -132,4 +142,5 @@ trait Bean
         unset($arr['instanceArr']);
         unset($arr['properties']);
     }
+
 }

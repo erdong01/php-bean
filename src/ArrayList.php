@@ -554,4 +554,11 @@ class ArrayList implements ArrayAccess, Enumerable
         $instance = $this->getInstance();
         return $instance->bindData(Arr::first($this->items, $callback, $default));
     }
+
+    public function push()
+    {
+        $instance = $this->getInstance();
+        $this->clearInstance();
+        $this->add($instance->toArr());
+    }
 }

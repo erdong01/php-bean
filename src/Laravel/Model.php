@@ -7,7 +7,6 @@ use Marstm\Support\Traits\Arr;
 
 trait Model
 {
-    use Container;
 
     /**
      * @var \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Query\Builder
