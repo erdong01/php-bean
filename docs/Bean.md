@@ -25,10 +25,14 @@ $userBean = UserBean::new();
 
 #### ArrayList
 
-列表对象
+ArrayList实例对象
 
 ```php
 $userBean = UserBean::ArrayList();
+$userBean->bean()->setUserNo(888888);
+$userBean->push();
+$userBean->toArray();
+//结果：[["user_no"=>888888]]
 ```
 
 #### bind
