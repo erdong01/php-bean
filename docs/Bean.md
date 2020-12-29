@@ -1,7 +1,7 @@
-
 可以做强类型语言功能
 
 在使用类里面直接引入Marstm\Bean
+
 ```php
 namespace Marstm\Test;
 
@@ -23,6 +23,14 @@ class TestJBean
 $userBean = UserBean::new();
 ```
 
+#### ArrayList
+
+列表对象
+
+```php
+$userBean = UserBean::ArrayList();
+```
+
 #### bind
 
 属性绑定数据
@@ -31,10 +39,11 @@ $userBean = UserBean::new();
 $userBean = UserBean::bind(["user_id" => 12, "user_name" => "new"]);
 
 ```
+
 #### setField
 
 设置映射属性字段名，在也不用担心字段名写错，频繁去数据库查询表下有什么字段。
- 
+
 ```php
 # user. 表前缀，不设置为空
 $userBean = UserBean::new()->setField("user.");
@@ -49,17 +58,16 @@ $userBean = UserBean::new()->setField("user.");
 #### toArray
 
 输出数组
- 
+
 ```php
 $userArr = UserBean::new()->toArray();
 ```
 
-
-### phpStorm 编辑器使用 
+### phpStorm 编辑器使用
 
 生成get和set：右击class类名 -> 选择Generate -> Getters and Setters -> 选择class 属性 -> ok 就可以生产了
 
-快捷键 alt + insert -> Getters and Setters -> 选择class属性 -> ok  
+快捷键 alt + insert -> Getters and Setters -> 选择class属性 -> ok
 
 ```php
 use Marstm\Bean;
@@ -123,7 +131,6 @@ $userBean->setUserId(111);
 \DB::table("user")->insert($userBean->toArr());
 
 ```
-
 
 ### 定义一个构造方法约束初始化赋值
 
