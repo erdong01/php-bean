@@ -22,8 +22,9 @@ trait Model
     public function first($columns = ['*'])
     {
         $query = $this->onceWithColumns(\Marstm\Arr::wrap($columns));
-        return $this->bindData($this->objectArray($query)->first());
+        return $this->bindData(arrayList($query)->first());
     }
+
 
     /**
      * @param string[] $columns
