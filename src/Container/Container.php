@@ -142,4 +142,50 @@ trait Container
         }
         return empty($this->items);
     }
+
+    /**
+     * @param $e
+     * @param null $type
+     * @return array|array[]|mixed|void
+     */
+    private function objectArray($e, $type = null)
+    {
+        $arr = [];
+        if (is_object($e)) {
+            if ($this->isBean($e)) {
+                $arr = $this->beanToArr($e);
+            } else if (is_object($e)) {
+                $arr = get_object_vars($e);
+            }
+            if ($type == 3) {
+                $this->items[] = $arr;
+                return;
+            }
+            return $arr;
+        }
+        $result = [];
+        foreach ($e as $k => $v) {
+            if ($this->isBean($v)) {
+                $arr = $this->beanToArr($v);
+            } else if (is_object($v)) {
+                $arr = get_object_vars($v);
+            } else {
+                $arr = $v;
+            }
+            if ($type === 1) {
+                array_unshift($this->items, $arr);
+            } else if ($type === 3) {
+                $this->items[$k] = $arr;
+            } else if ($type === 2) {
+                array_splice($this->items, $this->index, 0, $arr);
+            } else {
+                $result[$k] = $arr;
+            }
+        }
+        if ($type !== null) {
+            return;
+        }
+        return $result;
+    }
+
 }
