@@ -155,20 +155,6 @@ trait EnumeratesValues
         return array_sum($callback);
     }
 
-    public function beanToArr($object)
-    {
-        return $object->toArr();
-    }
-
-
-    public function isBean($object)
-    {
-        if (is_object($object) && method_exists($object, 'toArr')) {
-            return true;
-        }
-        return false;
-    }
-
     /**
      * Get an operator checker arrayList.
      * @param $key

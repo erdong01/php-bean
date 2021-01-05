@@ -188,4 +188,16 @@ trait Container
         return $result;
     }
 
+    public function isBean($object)
+    {
+        if (is_object($object) && method_exists($object, 'toArr')) {
+            return true;
+        }
+        return false;
+    }
+
+    public function beanToArr($object)
+    {
+        return $object->toArr();
+    }
 }
