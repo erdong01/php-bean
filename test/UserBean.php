@@ -114,9 +114,9 @@ class UserBean extends Base
 //$userBean->setUserId(111);
 //$userBean->setIsRegister(false);
 
-$userBean1 = UserBean::new();
-$userBean1->setUserName("test");
-var_dump($userBean1->toArr());
+//$userBean1 = UserBean::new();
+//$userBean1->setUserName("test");
+//var_dump($userBean1->toArr());
 //var_dump($userBean->toArr());
 
 //$userBean2 = UserBean::bind(["user_id" => 12, "user_name" => "new"]);

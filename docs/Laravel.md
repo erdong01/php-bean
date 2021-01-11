@@ -38,7 +38,7 @@ class BExam extends Exam
      * @param string[] $columns
      * @return $this
      */
-public function find($id, $columns = ['*']){}
+    public function find($id, $columns = ['*']){}
     
 ```
 #### where()

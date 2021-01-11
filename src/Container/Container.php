@@ -86,15 +86,6 @@ trait Container
     }
 
     /**
-     * 获取实例
-     * @return object|static
-     */
-    public function bean()
-    {
-        return $this->instance;
-    }
-
-    /**
      * Get the alias for an abstract if available.
      *
      * @param string $abstract

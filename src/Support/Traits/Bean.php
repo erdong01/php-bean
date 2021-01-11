@@ -44,8 +44,15 @@ trait Bean
             return $this->instance->properties;
         }
         $class = new \ReflectionObject($this->instance);
-        $properties = $class->getProperties(\ReflectionProperty::IS_PRIVATE);
-        $this->instance->properties = array_column($properties, 'name');
+        $className = $class->getName();
+        $properties = $class->getProperties(\ReflectionProperty::IS_PUBLIC | \ReflectionProperty::IS_PRIVATE);
+        $nameArr = [];
+        foreach ($properties as $propertiesV) {
+            if ($propertiesV->class === $className) {
+                $nameArr[] = $propertiesV->name;
+            }
+        }
+        $this->instance->properties = $nameArr;
     }
 
     /**
@@ -143,4 +150,12 @@ trait Bean
         unset($arr['properties']);
     }
 
+    /**
+     * 获取实例
+     * @return object|static
+     */
+    public function bean()
+    {
+        return $this->instance;
+    }
 }
