@@ -40,9 +40,41 @@ class Base
 class UserBean extends Base
 {
     /**
+     * @return array
+     */
+    public function getRole(): array
+    {
+        return $this->role;
+    }
+
+    /**
+     * @param array $role
+     */
+    public function setRole(array $role): void
+    {
+        $this->role = $role;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getM(): ?float
+    {
+        return $this->m;
+    }
+
+    /**
+     * @param float|null $m
+     */
+    public function setM(?float $m): void
+    {
+        $this->m = $m;
+    }
+
+    /**
      * @return int
      */
-    public function getUserId(): int
+    public function getUserId(): ?int
     {
         return $this->user_id;
     }
@@ -50,7 +82,7 @@ class UserBean extends Base
     /**
      * @param int $user_id
      */
-    public function setUserId(int $user_id): void
+    public function setUserId(?int $user_id): void
     {
         $this->user_id = $user_id;
     }
@@ -94,18 +126,22 @@ class UserBean extends Base
      * 用户id
      * @var int #整型
      */
-    private $user_id;
+    private int $user_id;
     /**
      * 用户名
      * @var string|null #字符串类型
      */
-    private $user_name;
+    private string $user_name;
 
     /**
      * @var bool|null
      */
-    private $is_register;
-
+    private bool $is_register;
+    /**
+     * @var float|null
+     */
+    private float $m;
+    private array $role;
 }
 
 
@@ -144,5 +180,4 @@ class UserBean extends Base
 //arrayList();
 
 $user = UserBean::new();
-$user->setUserName("test");
 var_dump($user->toArr());

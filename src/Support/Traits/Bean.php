@@ -50,6 +50,16 @@ trait Bean
         foreach ($properties as $propertiesV) {
             if ($propertiesV->class === $className) {
                 $nameArr[] = $propertiesV->name;
+                switch ($propertiesV->getType()->getName()) {
+                    case "string":
+                        $this->instance->{$propertiesV->name} = "";
+                        break;
+                    case  "int":
+                    case "float":
+                        $this->instance->{$propertiesV->name} = 0;
+                        $this->instance->{$propertiesV->name} = 0;
+                        break;
+                }
             }
         }
         $this->instance->properties = $nameArr;
@@ -106,8 +116,9 @@ trait Bean
     }
 
     /**
-     * Convert to array
+     *  Convert to array
      * @return array
+     * @author chenqiaojie 2021-01-13
      */
     public function toArr()
     {
@@ -121,7 +132,7 @@ trait Bean
                 continue;
             }
             $val = $this->$func();
-            if ($val !== null) {
+            if ($val !== null && $val !== "") {
                 $arr[$v] = $val;
             }
         }
