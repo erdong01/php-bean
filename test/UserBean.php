@@ -126,7 +126,7 @@ class UserBean extends Base
      * 用户id
      * @var int #整型
      */
-    private int $user_id;
+    private int|null $user_id;
     /**
      * 用户名
      * @var string|null #字符串类型
