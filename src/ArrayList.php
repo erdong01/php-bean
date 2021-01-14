@@ -2,6 +2,7 @@
 
 namespace Marstm;
 
+use Marstm\Laravel\ArrayList\ArrayListModel;
 use Marstm\Support\I\Arrayable;
 use Marstm\Support\I\Enumerable;
 use Marstm\Support\Traits\Arr;
@@ -10,7 +11,6 @@ use Marstm\Support\Traits\EnumeratesValues;
 use Marstm\Support\Traits\Macroable;
 use ArrayAccess;
 use ArrayIterator;
-use phpDocumentor\Reflection\Types\This;
 
 /**
  * Class ArrayList
@@ -18,7 +18,7 @@ use phpDocumentor\Reflection\Types\This;
  */
 class ArrayList implements ArrayAccess, Enumerable
 {
-    use   Macroable, EnumeratesValues;
+    use   Macroable, EnumeratesValues, ArrayListModel;
 
     /**
      * @var  void|null

@@ -3,8 +3,6 @@
 namespace Marstm\Laravel;
 
 use Closure;
-use Illuminate\Database\Eloquent\Builder;
-use Marstm\Container\Container;
 use Marstm\Support\Traits\Arr;
 
 trait Model

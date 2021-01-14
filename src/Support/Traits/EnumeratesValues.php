@@ -230,4 +230,113 @@ trait EnumeratesValues
     {
         return $this->instance;
     }
+
+    /**
+     * Filter items by the given key value pair.
+     *
+     * @param string $key
+     * @param mixed $values
+     * @param bool $strict
+     * @return static
+     */
+    public function whereIn($key, $values, $strict = false)
+    {
+        $values = $this->getArrayableItems($values);
+
+        return $this->filter(function ($item) use ($key, $values, $strict) {
+            return in_array(bean_data_get($item, $key), $values, $strict);
+        });
+    }
+
+    /**
+     * Filter items such that the value of the given key is between the given values.
+     *
+     * @param string $key
+     * @param array $values
+     * @return static
+     */
+    public function whereBetween($key, $values)
+    {
+        return $this->where($key, '>=', reset($values))->where($key, '<=', end($values));
+    }
+
+    /**
+     * Filter items such that the value of the given key is not between the given values.
+     *
+     * @param string $key
+     * @param array $values
+     * @return static
+     */
+    public function whereNotBetween($key, $values)
+    {
+        return $this->filter(function ($item) use ($key, $values) {
+            return bean_data_get($item, $key) < reset($values) || bean_data_get($item, $key) > end($values);
+        });
+    }
+
+    /**
+     * Filter items by the given key value pair.
+     *
+     * @param string $key
+     * @param mixed $values
+     * @param bool $strict
+     * @return static
+     */
+    public function whereNotIn($key, $values, $strict = false)
+    {
+        $values = $this->getArrayableItems($values);
+
+        return $this->reject(function ($item) use ($key, $values, $strict) {
+            return in_array(bean_data_get($item, $key), $values, $strict);
+        });
+    }
+
+    /**
+     * Filter items by the given key value pair using strict comparison.
+     *
+     * @param string $key
+     * @param mixed $values
+     * @return static
+     */
+    public function whereNotInStrict($key, $values)
+    {
+        return $this->whereNotIn($key, $values, true);
+    }
+
+    /**
+     * Filter the items, removing any items that don't match the given type.
+     *
+     * @param string $type
+     * @return static
+     */
+    public function whereInstanceOf($type)
+    {
+        return $this->filter(function ($value) use ($type) {
+            return $value instanceof $type;
+        });
+    }
+
+    /**
+     * Pass the collection to the given callback and return the result.
+     *
+     * @param callable $callback
+     * @return mixed
+     */
+    public function pipe(callable $callback)
+    {
+        return $callback($this);
+    }
+
+    /**
+     * Pass the collection to the given callback and then return it.
+     *
+     * @param callable $callback
+     * @return $this
+     */
+    public function tap(callable $callback)
+    {
+        $callback(clone $this);
+
+        return $this;
+    }
 }
