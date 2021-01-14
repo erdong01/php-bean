@@ -55,7 +55,18 @@ class BExam extends Exam
     public function where($column, $operator = null, $value = null, $boolean = 'and'){}
     
 ```
-
+#### orWhere()
+```php
+    /**
+     * Add an "or where" clause to the query.
+     *
+     * @param \Closure|string|array $column
+     * @param mixed $operator
+     * @param mixed $value
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    public function orWhere($column, $operator = null, $value = null){}
+```
 #### whereIn()
 ```php
     /**
@@ -70,7 +81,96 @@ class BExam extends Exam
     public function whereIn($column, $values, $boolean = 'and', $not = false){}
 
 ```
-#### save()
+#### whereNotIn()
+```php
+    /**
+     * Add a "where not in" clause to the query.
+     *
+     * @param string $column
+     * @param mixed $values
+     * @param string $boolean
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    public function whereNotIn($column, $values, $boolean = 'and'){}
+
+```
+#### whereNull()
+```php
+    /**
+     * Add a "where null" clause to the query.
+     *
+     * @param string|array $columns
+     * @param string $boolean
+     * @param bool $not
+     * @return \Illuminate\Database\Query\Builder
+     */
+    public function whereNull($columns, $boolean = 'and', $not = false){}
+```
+#### whereNotNull()
+```php
+    /**
+     * Add a "where not null" clause to the query.
+     *
+     * @param string|array $columns
+     * @param string $boolean
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    public function whereNotNull($columns, $boolean = 'and'){}
+```
+
+#### whereBetween()
+```php
+    /**
+     * Add a where between statement to the query.
+     *
+     * @param string $column
+     * @param array $values
+     * @param string $boolean
+     * @param bool $not
+     * @return \Illuminate\Database\Query\Builder
+     */
+    public function whereBetween($column, array $values, $boolean = 'and', $not = false){}
+```
+#### whereNotBetween()
+```php
+     /**
+     * Add a where not between statement to the query.
+     *
+     * @param string $column
+     * @param array $values
+     * @param string $boolean
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    public function whereNotBetween($column, array $values, $boolean = 'and'){}
+```
+
+#### whereColumn()
+```php
+    /**
+     * Add a "where" clause comparing two columns to the query.
+     *
+     * @param string|array $first
+     * @param string|null $operator
+     * @param string|null $second
+     * @param string|null $boolean
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    public function whereColumn($first, $operator = null, $second = null, $boolean = 'and'){}
+```
+
+#### whereExists()
+```php
+       /**
+     * Add an exists clause to the query.
+     *
+     * @param \Closure $callback
+     * @param string $boolean
+     * @param bool $not
+     * @return $this
+     */
+    public function whereExists(Closure $callback, $boolean = 'and', $not = false){}
+```
+#### 更新
 ```php
 
     /**
@@ -80,7 +180,7 @@ class BExam extends Exam
 
 ```
 
-#### update()
+#### 批量更新
 ```php
 
     /**
@@ -93,7 +193,7 @@ class BExam extends Exam
 
 ```
 
-#### delete()
+#### 删除模型
 ```php
 
     /**
@@ -104,5 +204,33 @@ class BExam extends Exam
      * @throws \Exception
      */
     public function delete(){}
+
+```
+
+#### history()
+```php
+
+    public function history(){}
+
+```
+
+
+#### 永久删除
+```php
+    /**
+     * Run the default delete function on the builder.
+     *
+     * Since we do not apply scopes here, the row will actually be deleted.
+     *
+     * @return mixed
+     */
+    public function forceDelete(){}
+
+```
+
+
+#### 恢复软删除模型#
+```php
+    public function restore(){}
 
 ```

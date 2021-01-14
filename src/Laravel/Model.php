@@ -2,6 +2,8 @@
 
 namespace Marstm\Laravel;
 
+use Closure;
+use Illuminate\Database\Eloquent\Builder;
 use Marstm\Container\Container;
 use Marstm\Support\Traits\Arr;
 
@@ -121,6 +123,20 @@ trait Model
     }
 
     /**
+     * Add an "or where" clause to the query.
+     *
+     * @param \Closure|string|array $column
+     * @param mixed $operator
+     * @param mixed $value
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    public function orWhere($column, $operator = null, $value = null)
+    {
+        $this->model = $this->getModel()->orWhere($column, $operator, $value);
+        return $this;
+    }
+
+    /**
      * Add a "where in" clause to the query.
      *
      * @param string $column
@@ -132,6 +148,165 @@ trait Model
     public function whereIn($column, $values, $boolean = 'and', $not = false)
     {
         $this->model = $this->getModel()->whereIn($column, $values, $boolean, $not);
+        return $this;
+    }
+
+    /**
+     * Add a "where not in" clause to the query.
+     *
+     * @param string $column
+     * @param mixed $values
+     * @param string $boolean
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    public function whereNotIn($column, $values, $boolean = 'and')
+    {
+        $this->model = $this->getModel()->whereNotIn($column, $values, $boolean);
+        return $this;
+    }
+
+    /**
+     * Add a "where null" clause to the query.
+     *
+     * @param string|array $columns
+     * @param string $boolean
+     * @param bool $not
+     * @return \Illuminate\Database\Query\Builder
+     */
+    public function whereNull($columns, $boolean = 'and', $not = false)
+    {
+        $this->model = $this->getModel()->whereNull($columns, $boolean, $not);
+        return $this;
+    }
+
+    /**
+     * Add a "where not null" clause to the query.
+     *
+     * @param string|array $columns
+     * @param string $boolean
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    public function whereNotNull($columns, $boolean = 'and')
+    {
+        $this->model = $this->getModel()->whereNotNull($columns, $boolea);
+        return $this;
+    }
+
+    /**
+     * Add a where between statement to the query.
+     *
+     * @param string $column
+     * @param array $values
+     * @param string $boolean
+     * @param bool $not
+     * @return \Illuminate\Database\Query\Builder
+     */
+    public function whereBetween($column, array $values, $boolean = 'and', $not = false)
+    {
+        $this->model = $this->getModel()->whereBetween($column, $values, $boolean, $not);
+        return $this;
+    }
+
+    /**
+     * Add a where not between statement to the query.
+     *
+     * @param string $column
+     * @param array $values
+     * @param string $boolean
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    public function whereNotBetween($column, array $values, $boolean = 'and')
+    {
+        $this->model = $this->getModel()->whereNotBetween($column, $values, $boolean);
+        return $this;
+    }
+
+    /**
+     * Add a "where date" statement to the query.
+     *
+     * @param string $column
+     * @param string $operator
+     * @param \DateTimeInterface|string|null $value
+     * @param string $boolean
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    public function whereDate($column, $operator, $value = null, $boolean = 'and')
+    {
+        $this->model = $this->getModel()->whereDate($column, $operator, $value, $boolean);
+        return $this;
+    }
+
+    /**
+     * Add a "where month" statement to the query.
+     *
+     * @param string $column
+     * @param string $operator
+     * @param \DateTimeInterface|string|null $value
+     * @param string $boolean
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    public function whereMonth($column, $operator, $value = null, $boolean = 'and')
+    {
+        $this->model = $this->getModel()->whereMonth($column, $operator, $value, $boolean);
+        return $this;
+    }
+
+    /**
+     * Add a "where day" statement to the query.
+     *
+     * @param string $column
+     * @param string $operator
+     * @param \DateTimeInterface|string|null $value
+     * @param string $boolean
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    public function whereDay($column, $operator, $value = null, $boolean = 'and')
+    {
+        $this->model = $this->getModel()->whereMonth($column, $operator, $value, $boolean);
+        return $this;
+    }
+
+    /**
+     * Add a "where time" statement to the query.
+     *
+     * @param string $column
+     * @param string $operator
+     * @param \DateTimeInterface|string|null $value
+     * @param string $boolean
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    public function whereTime($column, $operator, $value = null, $boolean = 'and')
+    {
+        $this->model = $this->getModel()->whereTime($column, $operator, $value, $boolean);
+        return $this;
+    }
+
+    /**
+     * Add a "where" clause comparing two columns to the query.
+     *
+     * @param string|array $first
+     * @param string|null $operator
+     * @param string|null $second
+     * @param string|null $boolean
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    public function whereColumn($first, $operator = null, $second = null, $boolean = 'and')
+    {
+        $this->model = $this->getModel()->whereColumn($first, $operator, $second, $boolean);
+        return $this;
+    }
+
+    /**
+     * Add an exists clause to the query.
+     *
+     * @param \Closure $callback
+     * @param string $boolean
+     * @param bool $not
+     * @return $this
+     */
+    public function whereExists(Closure $callback, $boolean = 'and', $not = false)
+    {
+        $this->model = $this->getModel()->whereExists($callback, $boolean, $not);
         return $this;
     }
 
@@ -198,4 +373,28 @@ trait Model
         }
         return $this->getModel()->delete();
     }
+
+    public function history()
+    {
+        $this->model = $this->getModel()->history();
+        return $this;
+    }
+
+    /**
+     * Run the default delete function on the builder.
+     *
+     * Since we do not apply scopes here, the row will actually be deleted.
+     *
+     * @return mixed
+     */
+    public function forceDelete()
+    {
+        return $this->getModel()->forceDelete();
+    }
+
+    public function restore()
+    {
+        return $this->getModel()->restore();
+    }
+
 }
