@@ -444,3 +444,13 @@ $BStudent = BStudent::ArrayList();
 $BStudent->bean()->setStudentNo(888);
 $BStudent->push();
 ```
+
+#### update()
+
+update 批量更新列表中数据：
+
+```php
+$BStudent = BStudent::ArrayList();
+$BStudent->bean()->setStudentNo(888);
+$BStudent->update();
+```

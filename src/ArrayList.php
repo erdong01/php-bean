@@ -5,10 +5,12 @@ namespace Marstm;
 use Marstm\Support\I\Arrayable;
 use Marstm\Support\I\Enumerable;
 use Marstm\Support\Traits\Arr;
+use Marstm\Support\Traits\Bean;
 use Marstm\Support\Traits\EnumeratesValues;
 use Marstm\Support\Traits\Macroable;
 use ArrayAccess;
 use ArrayIterator;
+use phpDocumentor\Reflection\Types\This;
 
 /**
  * Class ArrayList
@@ -354,23 +356,6 @@ class ArrayList implements ArrayAccess, Enumerable
 
 
     /**
-     * Run a filter over each of the items.
-     * @param callable|null $callback
-     * @return $this
-     */
-    public function filter(callable $callback = null)
-    {
-        $new = new self();
-        $new->setInstance($this->getInstance());
-        if ($callback) {
-            $new->setItems(Arr::where($this->getItems(), $callback));
-            return $new;
-        }
-        $new->setItems(Arr::where($this->getItems(), $callback));
-        return $new;
-    }
-
-    /**
      * Chunk the underlying collection array.
      *
      * @param int $size
@@ -547,8 +532,9 @@ class ArrayList implements ArrayAccess, Enumerable
     }
 
     /**
-     * @return object|static|null
-     * @throws \Exception
+     * @param callable|null $callback
+     * @param null $default
+     * @return object|static|Bean
      */
     public function firstBean(callable $callback = null, $default = null)
     {
@@ -561,5 +547,35 @@ class ArrayList implements ArrayAccess, Enumerable
         $instance = $this->getInstance();
         $this->add($instance->toArr());
         $this->clearInstance();
+    }
+
+    /**
+     * @param array $values
+     * @return $this
+     */
+    public function update(array $values = [])
+    {
+        $arr = $this->bean()->toArr();
+        if (!empty($values)) {
+            $arr = array_merge($arr, $this->objectArray($values));
+        }
+        $originalItems = $this->getOriginalItems() ?: $this->getItems();
+        $items = $this->getItems();
+        foreach ($items as $key => $value) {
+            $result = array_diff($arr, $value);
+            if ($result) {
+                foreach ($result as $k => $v) {
+                    if (isset($value[$k])) {
+                        $value[$k] = $v;
+                    }
+                }
+            }
+            $originalItems[$key] = $value;
+        }
+        $this->setItems($originalItems);
+        $this->setOriginalItems([]);
+        unset($items);
+        unset($originalItems);
+        return $this;
     }
 }

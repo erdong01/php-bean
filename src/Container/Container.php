@@ -6,10 +6,30 @@ namespace Marstm\Container;
 trait Container
 {
     /**
+     * @return array
+     */
+    public function getOriginalItems(): array
+    {
+        return $this->originalItems;
+    }
+
+    /**
+     * @param array $originalItems
+     */
+    public function setOriginalItems(array $originalItems): void
+    {
+        $this->originalItems = $originalItems;
+    }
+
+    /**
      * @var array
      */
     protected $items = [];
 
+    /**
+     * @var array
+     */
+    protected $originalItems = [];
     /**
      * @var array  The current globally available container
      */

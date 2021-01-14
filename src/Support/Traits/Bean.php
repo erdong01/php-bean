@@ -151,12 +151,5 @@ trait Bean
         unset($arr['properties']);
     }
 
-    /**
-     * 获取实例
-     * @return object|static
-     */
-    public function bean()
-    {
-        return $this->instance;
-    }
+
 }

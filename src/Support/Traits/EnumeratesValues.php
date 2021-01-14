@@ -133,6 +133,24 @@ trait EnumeratesValues
     }
 
     /**
+     * Run a filter over each of the items.
+     * @param callable|null $callback
+     * @return $this
+     */
+    public function filter(callable $callback = null)
+    {
+        $new = new self();
+        $new->setOriginalItems($this->getOriginalItems() ?: $this->getItems());
+        $new->setInstance($this->getInstance());
+        if ($callback) {
+            $new->setItems(Arr::where($this->getItems(), $callback));
+            return $new;
+        }
+        $new->setItems(Arr::where($this->getItems(), $callback));
+        return $new;
+    }
+
+    /**
      * Get the sum of the given values.
      * @param null $callback
      * @return float|int|mixed
@@ -166,10 +184,8 @@ trait EnumeratesValues
     {
         if (func_num_args() === 1) {
             $value = true;
-
             $operator = '=';
         }
-
         if (func_num_args() == 2) {
             $value = $operator;
             $operator = "=";
@@ -179,11 +195,9 @@ trait EnumeratesValues
             $strings = array_filter([$retrieved, $value], function ($value) {
                 return is_string($value) || (is_object($value) && method_exists($value, '__toString'));
             });
-
             if (count($strings) < 2 && count(array_filter([$retrieved, $value], 'is_object')) == 1) {
                 return in_array($operator, ['!=', '<>', '!==']);
             }
-
             switch ($operator) {
                 default:
                 case '=':
@@ -208,4 +222,12 @@ trait EnumeratesValues
         };
     }
 
+    /**
+     * 获取实例
+     * @return object|static|Bean
+     */
+    public function bean()
+    {
+        return $this->instance;
+    }
 }
